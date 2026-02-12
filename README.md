@@ -18,18 +18,6 @@ Students will be able to:
 - justify classification choices using scientific reasoning
 - reflect on biodiversity and human impact
 
-## For Teachers: How to Use in Class
-
-### Suggested Lesson Flow (40–60 minutes)
-1. **Warm-up (5–10 min)**  
-   Quick discussion: *“What is biodiversity and why does it matter?”*
-2. **Gameplay (20–30 min)**  
-   Students play individually or in pairs.
-3. **Debrief (10–15 min)**  
-   Students explain choices, debate classification, connect to real ecosystems.
-4. **Exit ticket (5 min)**  
-   1 short written response or a mini-quiz.
-
 ## Grouping Options
 - **Pairs** (recommended): encourages discussion and peer explanation  
 - **Stations**: rotate groups through the game + hands-on sorting cards  
