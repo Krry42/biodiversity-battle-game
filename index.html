@@ -182,7 +182,7 @@
     button.ghost{
       background: rgba(255,255,255,.80);
       color: rgba(14,26,43,.92);
-      border: 1px solid rgba(0,0,0,.10);
+      border: 3px solid var(--cat-border, rgba(0,0,0,.10));
       box-shadow: none;
     }
 
@@ -289,7 +289,7 @@
       flex: 1 1 auto;
       min-height: 0;
       background: rgba(255,255,255,.65);
-      border: 1px solid rgba(0,0,0,.10);
+      border: 3px solid var(--cat-border, rgba(0,0,0,.10));
       border-radius: 16px;
       padding: 12px;
       display:grid;
@@ -308,8 +308,8 @@
       position: relative;
       border-radius: 14px;
       padding: 10px 10px 8px;
-      background: rgba(255,255,255,.90);
-      border: 1px solid rgba(0,0,0,.10);
+      background: var(--cat-bg, rgba(255,255,255,.90));
+      border: 3px solid var(--cat-border, rgba(0,0,0,.10));
       cursor:pointer;
       min-height: var(--tile-min-h);
       display:flex;
@@ -355,20 +355,39 @@
     }
     .occupants{
       position:absolute;
-      right: 8px;
-      top: 8px;
+      left: 50%;
+      top: 58%;
+      transform: translate(-50%, -50%);
       display:flex;
-      gap: 5px;
+      gap: 6px;
       flex-wrap: wrap;
-      justify-content: flex-end;
-      width: 64px;
+      justify-content: center;
+      align-items: center;
+      width: 80%;
       pointer-events: none;
+      z-index: 3;
     }
     .dot{
       width: 10px; height: 10px;
       border-radius: 4px;
       box-shadow: inset 0 0 0 2px rgba(255,255,255,.85), 0 2px 8px rgba(0,0,0,.12);
     }
+
+    
+    /* === Category styling (icons + borders) === */
+    .tile::before{
+      content:"";
+      position:absolute;
+      inset: 0 0 auto 0;
+      height: 8px;
+      background: var(--cat-stripe, rgba(14,26,43,.10));
+      opacity: .85;
+      pointer-events:none;
+    }
+    .tileTop{ position: relative; z-index: 1; }
+    .tileMeta{ position: relative; z-index: 1; }
+    .occupants{ z-index: 2; }
+
 
     .modalBackdrop{
       position: fixed;
@@ -416,7 +435,7 @@
     }
     .challenge{
       background: rgba(255,255,255,.95);
-      border: 1px solid rgba(0,0,0,.10);
+      border: 3px solid var(--cat-border, rgba(0,0,0,.10));
       border-radius: 14px;
       padding: 12px;
       font-size: var(--small-font);
@@ -528,7 +547,7 @@
         <div class="brand">
           <div>
             <h1>Biodiversity: Living Things Board Game 🧬</h1>
-            <p>Groups of 4 | Rules: Roll → Answer → Check</p>
+            <p>Groups of 4 | Roll→Answer→Check</p>
           </div>
           <div class="pill">Scroll panel + board on phones</div>
         </div>
@@ -616,12 +635,480 @@
   </div>
 
   <script>
-    const ICONS = {
-      dna: "https://commons.wikimedia.org/wiki/Special:FilePath/DNA_icon.svg",
-      microscope: "https://commons.wikimedia.org/wiki/Special:FilePath/Microscope_icon.svg",
-      atom: "https://commons.wikimedia.org/wiki/Special:FilePath/Popular_culture_atom_symbol.svg",
-      leaf: "https://commons.wikimedia.org/wiki/Special:FilePath/Leaf_Icon.png"
+    
+    // === Local, hand-drawn style SVG icons (no external dependencies) ===
+    const CATEGORY = {
+      ecosystems: { border: "#0b84a5", stripe: "#34a853", a: "#0b84a5", b: "#2ecc71", bg1: "rgba(11,132,165,.13)", bg2: "rgba(46,204,113,.10)" },
+      eco_aquatic: { border: "#1e63ff", stripe: "#0b3d91", a: "#1e63ff", b: "#5aa7ff", bg1: "rgba(30,99,255,.13)", bg2: "rgba(90,167,255,.10)" },
+      eco_forest: { border: "#1b5e20", stripe: "#0f3d14", a: "#1b5e20", b: "#43a047", bg1: "rgba(27,94,32,.13)", bg2: "rgba(67,160,71,.10)" },
+      eco_grassland: { border: "#7cb342", stripe: "#558b2f", a: "#7cb342", b: "#aed581", bg1: "rgba(124,179,66,.13)", bg2: "rgba(174,213,129,.10)" },
+      eco_desert: { border: "#f4b400", stripe: "#c88700", a: "#f4b400", b: "#ffd54f", bg1: "rgba(244,180,0,.13)", bg2: "rgba(255,213,79,.10)" },
+      eco_marine: { border: "#00bfa5", stripe: "#00897b", a: "#00bfa5", b: "#4dd0e1", bg1: "rgba(0,191,165,.13)", bg2: "rgba(77,208,225,.10)" },
+      eco_freshwater: { border: "#63c7ff", stripe: "#2196f3", a: "#63c7ff", b: "#bbdefb", bg1: "rgba(99,199,255,.13)", bg2: "rgba(187,222,251,.10)" },
+      eco_coralreef: { border: "#00e5ff", stripe: "#00b8d4", a: "#00e5ff", b: "#18ffff", bg1: "rgba(0,229,255,.13)", bg2: "rgba(24,255,255,.10)" },
+      eco_tundra: { border: "#ff8f00", stripe: "#ef6c00", a: "#ff8f00", b: "#ffcc80", bg1: "rgba(255,143,0,.13)", bg2: "rgba(255,204,128,.10)" },
+      eco_urban: { border: "#757575", stripe: "#424242", a: "#757575", b: "#bdbdbd", bg1: "rgba(117,117,117,.13)", bg2: "rgba(189,189,189,.10)" },
+      animals:    { border: "#f39c12", stripe: "#e67e22", a: "#f39c12", b: "#e67e22", bg1: "rgba(243,156,18,.14)", bg2: "rgba(230,126,34,.10)" }, // orange
+      micro:      { border: "#8e44ad", stripe: "#9b59b6", a: "#8e44ad", b: "#9b59b6", bg1: "rgba(142,68,173,.14)", bg2: "rgba(155,89,182,.10)" }, // purple
+      genetics:   { border: "#16a085", stripe: "#2bbbad", a: "#16a085", b: "#2bbbad", bg1: "rgba(22,160,133,.14)", bg2: "rgba(43,187,173,.10)" },
+      ecology:    { border: "#2ecc71", stripe: "#34a853", a: "#2ecc71", b: "#34a853", bg1: "rgba(46,204,113,.14)", bg2: "rgba(52,168,83,.10)" }, // green
+      evolution:  { border: "#c0392b", stripe: "#e74c3c", a: "#c0392b", b: "#e74c3c", bg1: "rgba(192,57,43,.14)", bg2: "rgba(231,76,60,.10)" },
+      general:    { border: "rgba(14,26,43,.22)", stripe: "rgba(14,26,43,.16)", a: "#1450c8", b: "#0e1a2b", bg1: "rgba(255,255,255,.92)", bg2: "rgba(255,255,255,.88)" }
     };
+
+    const SVG = {
+      atom: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <g fill="none" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <ellipse cx="32" cy="32" rx="22" ry="10" transform="rotate(20 32 32)"/>
+            <ellipse cx="32" cy="32" rx="22" ry="10" transform="rotate(-20 32 32)"/>
+            <ellipse cx="32" cy="32" rx="22" ry="10" transform="rotate(90 32 32)"/>
+          </g>
+          <circle cx="32" cy="32" r="6" fill="${p.a}" stroke="rgba(14,26,43,.86)" stroke-width="3"/>
+          <circle cx="46" cy="22" r="3" fill="${p.b}"/>
+        </svg>`,
+      dna: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <path d="M20 10c10 8 14 14 14 22s-4 14-14 22" fill="none" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round"/>
+          <path d="M44 10c-10 8-14 14-14 22s4 14 14 22" fill="none" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round"/>
+          <g stroke="rgba(14,26,43,.72)" stroke-width="3" stroke-linecap="round">
+            <line x1="24" y1="18" x2="40" y2="18"/>
+            <line x1="22" y1="26" x2="42" y2="26"/>
+            <line x1="22" y1="34" x2="42" y2="34"/>
+            <line x1="24" y1="42" x2="40" y2="42"/>
+            <line x1="26" y1="50" x2="38" y2="50"/>
+          </g>
+          <circle cx="20" cy="10" r="3" fill="${p.a}"/>
+          <circle cx="44" cy="54" r="3" fill="${p.b}"/>
+        </svg>`,
+      leaf: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <path d="M50 12C34 14 18 26 14 42c-2 9 6 14 14 10 16-8 26-24 22-40z" fill="rgba(46,204,113,.20)" stroke="rgba(14,26,43,.82)" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M20 46c10-12 18-18 28-24" fill="none" stroke="${p.a}" stroke-width="3" stroke-linecap="round"/>
+        </svg>`,
+      globe: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <circle cx="32" cy="32" r="22" fill="rgba(11,132,165,.18)" stroke="rgba(14,26,43,.86)" stroke-width="3"/>
+          <path d="M10 32h44" stroke="rgba(14,26,43,.60)" stroke-width="3" stroke-linecap="round"/>
+          <path d="M32 10c8 8 8 36 0 44M32 10c-8 8-8 36 0 44" stroke="rgba(14,26,43,.60)" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <path d="M18 20c8 4 20 4 28 0M18 44c8-4 20-4 28 0" stroke="${p.a}" stroke-width="3" stroke-linecap="round" fill="none"/>
+        </svg>`,
+      sunrock: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <g stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round">
+            <circle cx="20" cy="20" r="8" fill="rgba(243,156,18,.20)"/>
+            <line x1="20" y1="6" x2="20" y2="10"/><line x1="20" y1="30" x2="20" y2="34"/>
+            <line x1="6" y1="20" x2="10" y2="20"/><line x1="30" y1="20" x2="34" y2="20"/>
+            <line x1="10" y1="10" x2="13" y2="13"/><line x1="27" y1="27" x2="30" y2="30"/>
+            <line x1="10" y1="30" x2="13" y2="27"/><line x1="27" y1="13" x2="30" y2="10"/>
+          </g>
+          <path d="M26 50l8-14h18l6 14H26z" fill="rgba(14,26,43,.10)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M34 36l10 14" stroke="${p.a}" stroke-width="3" stroke-linecap="round"/>
+        </svg>`,
+      pawleaf: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <g fill="rgba(243,156,18,.20)" stroke="rgba(14,26,43,.86)" stroke-width="3">
+            <circle cx="20" cy="24" r="5"/><circle cx="30" cy="18" r="5"/><circle cx="40" cy="24" r="5"/><circle cx="28" cy="44" r="10"/>
+          </g>
+          <path d="M46 46c6-8 8-16 6-26-10 2-18 8-22 16" fill="rgba(46,204,113,.16)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M34 40c4-4 8-8 14-12" fill="none" stroke="${p.a}" stroke-width="3" stroke-linecap="round"/>
+        </svg>`,
+      house: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <path d="M14 30l18-16 18 16" fill="rgba(11,132,165,.14)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M20 28v24h24V28" fill="rgba(255,255,255,.40)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M30 52V38h8v14" fill="rgba(52,168,83,.12)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linejoin="round"/>
+          <circle cx="46" cy="38" r="3" fill="${p.a}"/>
+        </svg>`,
+      puzzle: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <path d="M18 22h10c-2-6 8-8 10-2 2 6-4 8-6 8v6h6c0-2 2-6 8-6s8 6 6 10-8 6-10 2H34v10H18V22z"
+            fill="rgba(155,89,182,.12)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M22 44h10" stroke="${p.a}" stroke-width="3" stroke-linecap="round"/>
+        </svg>`,
+      network: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <g stroke="rgba(14,26,43,.78)" stroke-width="3" stroke-linecap="round" fill="none">
+            <line x1="20" y1="20" x2="44" y2="20"/><line x1="20" y1="20" x2="32" y2="44"/><line x1="44" y1="20" x2="32" y2="44"/>
+            <line x1="20" y1="20" x2="18" y2="46"/><line x1="44" y1="20" x2="46" y2="46"/>
+            <line x1="18" y1="46" x2="32" y2="44"/><line x1="46" y1="46" x2="32" y2="44"/>
+          </g>
+          <g fill="${p.a}" stroke="rgba(14,26,43,.86)" stroke-width="3">
+            <circle cx="20" cy="20" r="5"/><circle cx="44" cy="20" r="5"/><circle cx="32" cy="44" r="5"/>
+            <circle cx="18" cy="46" r="4"/><circle cx="46" cy="46" r="4"/>
+          </g>
+        </svg>`,
+      arrows: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <path d="M18 44c0-16 10-26 26-26" fill="none" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round"/>
+          <path d="M40 14l6 4-4 6" fill="none" stroke="${p.a}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M46 20c0 16-10 26-26 26" fill="none" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round"/>
+          <path d="M24 50l-6-4 4-6" fill="none" stroke="${p.b}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>`,
+      mushroom: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <path d="M16 30c2-12 12-18 16-18s14 6 16 18H16z" fill="rgba(142,68,173,.16)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M26 30v16c0 6 12 6 12 0V30" fill="rgba(255,255,255,.40)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linejoin="round"/>
+          <circle cx="26" cy="24" r="3" fill="${p.a}"/>
+          <circle cx="38" cy="22" r="2.5" fill="${p.b}"/>
+        </svg>`,
+      plant: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <path d="M32 54V26" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round"/>
+          <path d="M32 34c-10 0-16-6-18-14 10-2 18 4 18 14z" fill="rgba(46,204,113,.20)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M32 38c10 0 16-6 18-14-10-2-18 4-18 14z" fill="rgba(52,168,83,.16)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linejoin="round"/>
+          <circle cx="32" cy="24" r="4" fill="${p.a}" stroke="rgba(14,26,43,.86)" stroke-width="3"/>
+        </svg>`,
+      mouth: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <path d="M16 34c6 10 26 10 32 0" fill="rgba(243,156,18,.14)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round"/>
+          <path d="M20 32c8 6 16 6 24 0" fill="none" stroke="${p.a}" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="24" cy="28" r="2.5" fill="rgba(14,26,43,.75)"/>
+          <circle cx="40" cy="28" r="2.5" fill="rgba(14,26,43,.75)"/>
+        </svg>`,
+      scales: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <path d="M32 14v36" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round"/>
+          <path d="M18 22h28" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round"/>
+          <path d="M18 22l-8 14h16l-8-14z" fill="rgba(11,132,165,.14)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M46 22l-8 14h16l-8-14z" fill="rgba(52,168,83,.12)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M22 52h20" stroke="${p.a}" stroke-width="3" stroke-linecap="round"/>
+        </svg>`,
+      link: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <path d="M24 34l-6 6a10 10 0 0 0 14 14l6-6" fill="none" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round"/>
+          <path d="M40 30l6-6a10 10 0 0 0-14-14l-6 6" fill="none" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round"/>
+          <path d="M26 38l12-12" stroke="${p.a}" stroke-width="3" stroke-linecap="round"/>
+        </svg>`,
+      waves: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <path d="M10 40c6 6 12 6 18 0s12-6 18 0 12 6 18 0" fill="none" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round"/>
+          <path d="M10 50c6 6 12 6 18 0s12-6 18 0 12 6 18 0" fill="none" stroke="${p.a}" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="18" cy="26" r="5" fill="rgba(11,132,165,.18)" stroke="rgba(14,26,43,.86)" stroke-width="3"/>
+        </svg>`,
+      tree: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <path d="M32 10c-10 6-16 16-16 24 0 8 6 12 16 12s16-4 16-12c0-8-6-18-16-24z" fill="rgba(52,168,83,.18)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M28 46v10h8V46" fill="rgba(14,26,43,.10)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M24 30c4 2 12 2 16 0" fill="none" stroke="${p.a}" stroke-width="3" stroke-linecap="round"/>
+        </svg>`,
+      grass: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <g fill="none" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round">
+            <path d="M18 52c4-10 4-18 0-30"/><path d="M26 52c6-12 8-22 6-34"/>
+            <path d="M34 52c2-12 0-22-6-34"/><path d="M42 52c4-10 10-18 18-26"/>
+          </g>
+          <path d="M14 52h36" stroke="${p.a}" stroke-width="3" stroke-linecap="round"/>
+        </svg>`,
+      cactus: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <path d="M30 54V28c0-6-6-10-12-8v10c0 4-6 4-6 0V16c0-8 18-10 18 6v4" fill="none" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M34 54V24c0-10 18-8 18 2v12c0 4-6 4-6 0V28c-6-2-12 2-12 8v18" fill="none" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="22" cy="26" r="3" fill="${p.a}"/>
+          <circle cx="44" cy="32" r="3" fill="${p.b}"/>
+        </svg>`,
+      city: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <path d="M14 54V28l12-6v32H14zM26 54V18l12-6v42H26zM38 54V30l12-6v30H38z"
+            fill="rgba(14,26,43,.10)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linejoin="round"/>
+          <g fill="${p.a}">
+            <rect x="18" y="34" width="4" height="4"/><rect x="18" y="42" width="4" height="4"/>
+            <rect x="30" y="26" width="4" height="4"/><rect x="30" y="34" width="4" height="4"/><rect x="30" y="42" width="4" height="4"/>
+            <rect x="42" y="36" width="4" height="4"/><rect x="42" y="44" width="4" height="4"/>
+          </g>
+        </svg>`,
+      bug: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <ellipse cx="32" cy="36" rx="12" ry="14" fill="rgba(243,156,18,.16)" stroke="rgba(14,26,43,.86)" stroke-width="3"/>
+          <circle cx="32" cy="20" r="8" fill="rgba(243,156,18,.16)" stroke="rgba(14,26,43,.86)" stroke-width="3"/>
+          <path d="M20 32l-8-6M44 32l8-6M20 42l-10 0M44 42l10 0M24 50l-8 6M40 50l8 6" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round"/>
+          <path d="M28 18l-8-8M36 18l8-8" stroke="${p.a}" stroke-width="3" stroke-linecap="round"/>
+        </svg>`,
+      spine: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <path d="M32 10v44" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round"/>
+          <g fill="rgba(243,156,18,.12)" stroke="rgba(14,26,43,.86)" stroke-width="3">
+            <rect x="26" y="14" width="12" height="6" rx="3"/><rect x="26" y="24" width="12" height="6" rx="3"/>
+            <rect x="26" y="34" width="12" height="6" rx="3"/><rect x="26" y="44" width="12" height="6" rx="3"/>
+          </g>
+          <circle cx="32" cy="54" r="4" fill="${p.a}" stroke="rgba(14,26,43,.86)" stroke-width="3"/>
+        </svg>`,
+      shell: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <path d="M18 46c0-18 12-30 26-30 10 0 18 8 18 18 0 10-8 18-18 18H18z"
+            fill="rgba(243,156,18,.14)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M26 46c0-12 8-22 18-22" fill="none" stroke="${p.a}" stroke-width="3" stroke-linecap="round"/>
+          <path d="M34 46c0-8 4-14 10-14" fill="none" stroke="${p.b}" stroke-width="3" stroke-linecap="round"/>
+        </svg>`,
+      fish: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <path d="M20 32c8-10 22-10 30 0-8 10-22 10-30 0z" fill="rgba(11,132,165,.18)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M20 32l-10-8v16l10-8z" fill="rgba(11,132,165,.18)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linejoin="round"/>
+          <circle cx="40" cy="30" r="3" fill="rgba(14,26,43,.75)"/>
+          <path d="M32 34c4 2 8 2 12 0" fill="none" stroke="${p.a}" stroke-width="3" stroke-linecap="round"/>
+        </svg>`,
+      frog: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <path d="M18 40c2-10 10-16 14-16s12 6 14 16c2 10-4 16-14 16s-16-6-14-16z"
+            fill="rgba(46,204,113,.18)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linejoin="round"/>
+          <circle cx="26" cy="28" r="4" fill="rgba(255,255,255,.8)" stroke="rgba(14,26,43,.86)" stroke-width="3"/>
+          <circle cx="38" cy="28" r="4" fill="rgba(255,255,255,.8)" stroke="rgba(14,26,43,.86)" stroke-width="3"/>
+          <circle cx="26" cy="28" r="1.8" fill="rgba(14,26,43,.8)"/>
+          <circle cx="38" cy="28" r="1.8" fill="rgba(14,26,43,.8)"/>
+          <path d="M26 44c4 3 8 3 12 0" fill="none" stroke="${p.a}" stroke-width="3" stroke-linecap="round"/>
+        </svg>`,
+      lizard: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <path d="M18 40c6-10 24-14 30-4 4 6 0 14-8 14H30c-6 0-10-4-12-10z"
+            fill="rgba(52,168,83,.14)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M46 28l8-6" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round"/>
+          <path d="M22 46l-6 8M28 50l-2 10M36 50l2 10M42 46l6 8" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="40" cy="34" r="2.5" fill="rgba(14,26,43,.8)"/>
+          <path d="M28 42c6 2 10 2 14 0" fill="none" stroke="${p.a}" stroke-width="3" stroke-linecap="round"/>
+        </svg>`,
+      bird: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <path d="M16 36c10-14 22-14 32 0-10 4-18 8-22 16-6-6-8-10-10-16z"
+            fill="rgba(52,168,83,.12)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M48 36l10 2-8 6" fill="none" stroke="${p.a}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="38" cy="34" r="2.5" fill="rgba(14,26,43,.8)"/>
+        </svg>`,
+      mammal: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <path d="M18 40c0-10 8-18 14-18h0c6 0 14 8 14 18 0 10-6 16-14 16s-14-6-14-16z"
+            fill="rgba(243,156,18,.12)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M24 24l-6-6M40 24l6-6" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="26" cy="38" r="2.5" fill="rgba(14,26,43,.8)"/>
+          <circle cx="38" cy="38" r="2.5" fill="rgba(14,26,43,.8)"/>
+          <path d="M28 46c2 2 6 2 8 0" fill="none" stroke="${p.a}" stroke-width="3" stroke-linecap="round"/>
+        </svg>`,
+      cell: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <path d="M12 34c0-14 10-24 24-24s16 8 16 18-6 26-22 26S12 48 12 34z"
+            fill="rgba(155,89,182,.14)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linejoin="round"/>
+          <circle cx="34" cy="34" r="8" fill="rgba(255,255,255,.5)" stroke="rgba(14,26,43,.72)" stroke-width="3"/>
+          <circle cx="36" cy="32" r="3" fill="${p.a}"/>
+          <path d="M20 28c2 2 4 2 6 0M18 38c2 2 4 2 6 0M44 46c2 2 4 2 6 0" stroke="${p.b}" stroke-width="3" stroke-linecap="round"/>
+        </svg>`,
+      microscope: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <path d="M26 14l10-4 6 14-10 4-6-14z" fill="rgba(155,89,182,.12)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M30 26l-6 4c-6 4-8 10-6 18h28" fill="none" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round"/>
+          <path d="M40 48c0 4-4 6-8 6s-8-2-8-6h16z" fill="rgba(14,26,43,.10)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linejoin="round"/>
+          <circle cx="46" cy="22" r="4" fill="${p.a}" stroke="rgba(14,26,43,.86)" stroke-width="3"/>
+        </svg>`,
+      petri: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <circle cx="32" cy="34" r="18" fill="rgba(155,89,182,.10)" stroke="rgba(14,26,43,.86)" stroke-width="3"/>
+          <path d="M18 30c6 6 22 6 28 0" fill="none" stroke="${p.a}" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="26" cy="38" r="3" fill="${p.b}"/>
+          <circle cx="38" cy="40" r="2.5" fill="${p.a}"/>
+          <circle cx="34" cy="28" r="2.5" fill="${p.b}"/>
+        </svg>`,
+      chameleon: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <path d="M18 40c2-12 18-22 28-12 8 8 4 22-8 22H30c-6 0-12-4-12-10z"
+            fill="rgba(52,168,83,.14)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M44 44c8 0 10 10 2 10" fill="none" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="38" cy="34" r="3" fill="rgba(255,255,255,.8)" stroke="rgba(14,26,43,.86)" stroke-width="3"/>
+          <circle cx="38" cy="34" r="1.5" fill="rgba(14,26,43,.85)"/>
+          <path d="M28 42c6 2 10 2 14 0" fill="none" stroke="${p.a}" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="30" cy="30" r="2.5" fill="${p.b}"/>
+        </svg>`,
+      footprint: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <path d="M28 52c-8 0-10-10-6-18 2-4 6-6 10-6s8 2 10 6c4 8 2 18-6 18H28z"
+            fill="rgba(243,156,18,.14)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linejoin="round"/>
+          <g fill="${p.a}">
+            <circle cx="22" cy="26" r="3"/><circle cx="28" cy="22" r="3"/><circle cx="34" cy="22" r="3"/><circle cx="40" cy="26" r="3"/>
+          </g>
+        </svg>`,
+      thermo: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <path d="M32 12v28" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round"/>
+          <path d="M32 40a10 10 0 1 0 10 10c0-4-2-7-4-9V16a6 6 0 0 0-12 0v25c-2 2-4 5-4 9a10 10 0 0 0 10-10z"
+            fill="rgba(231,76,60,.12)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linejoin="round"/>
+          <circle cx="32" cy="50" r="5" fill="${p.a}"/>
+        </svg>`,
+      spiral: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <path d="M34 50c-14 0-20-16-10-26 8-8 22-2 22 10 0 10-12 14-18 8-4-4 0-10 6-10 6 0 8 8 0 12"
+            fill="none" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="34" cy="40" r="3" fill="${p.a}"/>
+          <circle cx="40" cy="30" r="2.5" fill="${p.b}"/>
+        </svg>`,
+
+      tag: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <path d="M20 18h22l10 14-10 14H20L10 32l10-14z"
+            fill="rgba(22,160,133,.12)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linejoin="round"/>
+          <circle cx="24" cy="32" r="4" fill="rgba(255,255,255,.65)" stroke="rgba(14,26,43,.72)" stroke-width="3"/>
+          <path d="M32 32h14" stroke="${p.a}" stroke-width="3" stroke-linecap="round"/>
+        </svg>`,
+      coral: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <path d="M32 54V30" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round"/>
+          <path d="M32 40c-6 0-10-6-10-12 8 0 10 4 10 12z" fill="rgba(231,76,60,.12)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M32 38c6 0 10-6 10-12-8 0-10 4-10 12z" fill="rgba(11,132,165,.12)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M24 52c0-8-6-12-12-12 0 10 4 14 12 14" fill="none" stroke="${p.a}" stroke-width="3" stroke-linecap="round"/>
+          <path d="M40 52c0-8 6-12 12-12 0 10-4 14-12 14" fill="none" stroke="${p.b}" stroke-width="3" stroke-linecap="round"/>
+        </svg>`,
+      snow: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <g stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round">
+            <path d="M32 12v40"/><path d="M14 22l36 20"/><path d="M50 22L14 42"/>
+            <path d="M32 12l-6 6M32 12l6 6"/><path d="M32 52l-6-6M32 52l6-6"/>
+            <path d="M14 22l8 0M50 22l-8 0"/><path d="M14 42l8 0M50 42l-8 0"/>
+          </g>
+          <circle cx="32" cy="32" r="5" fill="${p.a}" stroke="rgba(14,26,43,.86)" stroke-width="3"/>
+        </svg>`,
+      target: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <circle cx="32" cy="32" r="20" fill="rgba(231,76,60,.10)" stroke="rgba(14,26,43,.86)" stroke-width="3"/>
+          <circle cx="32" cy="32" r="12" fill="none" stroke="rgba(14,26,43,.60)" stroke-width="3"/>
+          <circle cx="32" cy="32" r="5" fill="${p.a}" stroke="rgba(14,26,43,.86)" stroke-width="3"/>
+          <path d="M46 18l10-4-4 10" fill="none" stroke="${p.b}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M44 20l10-10" fill="none" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round"/>
+        </svg>`
+    };
+
+    const ICON_KEY = {
+      "atom":"atom",
+      "dna":"dna",
+      "biodiversity":"globe",
+      "ecosystem":"globe",
+      "abiotic factors":"sunrock",
+      "biotic factors":"pawleaf",
+      "species":"tag",
+      "genetic diversity":"dna",
+      "habitat":"house",
+      "niche":"puzzle",
+      "food web":"network",
+      "energy flow":"arrows",
+      "decomposers":"mushroom",
+      "producers":"plant",
+      "consumers":"mouth",
+      "ecological balance":"scales",
+      "symbiosis":"link",
+      "ecosystems: aquatic":"waves",
+      "ecosystems: forest":"tree",
+      "ecosystems: grassland":"grass",
+      "ecosystems: desert":"cactus",
+      "ecosystems: marine":"waves",
+      "ecosystems: freshwater":"waves",
+      "ecosystems: coral reef":"coral",
+      "ecosystems: tundra":"snow",
+      "ecosystems: urban":"city",
+      "invertebrates":"bug",
+      "vertebrates":"spine",
+      "arthropods":"bug",
+      "mollusks":"shell",
+      "fish":"fish",
+      "amphibians":"frog",
+      "reptiles":"lizard",
+      "birds":"bird",
+      "mammals":"mammal",
+      "microorganisms":"cell",
+      "microbes":"cell",
+      "microscopic life":"cell",
+      "microscopic organisms":"cell",
+      "microscopic ecosystems":"petri",
+      "microscopic diversity":"cell",
+      "microscopic observation":"microscope",
+      "adaptation":"chameleon",
+      "behavioral adaptation":"footprint",
+      "physiological adaptation":"thermo",
+      "evolution":"spiral",
+      "natural selection":"target",
+      "camouflage":"chameleon"
+    };
+
+    // Icons not explicitly mapped fall back by keyword match
+    function normalizeWord(word){
+      return String(word || "").trim().toLowerCase();
+    }
+
+    function categoryFor(word){
+      const raw = String(word ?? "").trim();
+      const lower = raw.toLowerCase();
+
+      // Ecosystems sub-palettes: "Ecosystems: X"
+      if (lower.startsWith("ecosystems:")) {
+        const sub = lower.split(":").slice(1).join(":").trim();
+        if (sub.includes("aquatic")) return "eco_aquatic";
+        if (sub.includes("forest")) return "eco_forest";
+        if (sub.includes("grassland")) return "eco_grassland";
+        if (sub.includes("desert")) return "eco_desert";
+        if (sub.includes("marine")) return "eco_marine";
+        if (sub.includes("freshwater")) return "eco_freshwater";
+        if (sub.includes("coral reef") || sub.includes("coralreef")) return "eco_coralreef";
+        if (sub.includes("tundra")) return "eco_tundra";
+        if (sub.includes("urban")) return "eco_urban";
+        return "ecosystems";
+      }
+
+      const w = normalizeWord(word);
+
+      // Animals
+      const animals = new Set([
+        "invertebrates","vertebrates","arthropods","mollusks",
+        "fish","amphibians","reptiles","birds","mammals"
+      ]);
+      if (animals.has(w)) return "animals";
+
+      // Micro / microscopic
+      if (w.includes("micro") || w.includes("microscopic")) return "micro";
+
+      // Genetics & matter
+      if (w.includes("dna") || w.includes("genetic") || w.includes("atom")) return "genetics";
+
+      // Evolution / adaptation
+      if (w.includes("evolution") || w.includes("natural selection") || w.includes("camouflage") || w.includes("adaptation")) return "evolution";
+
+      // Ecosystems & ecology (non "Ecosystems:" tiles)
+      const eco = new Set([
+        "biodiversity","ecosystem","abiotic factors","biotic factors","species",
+        "habitat","niche","food web","energy flow","decomposers","producers","consumers",
+        "ecological balance","symbiosis"
+      ]);
+      if (eco.has(w)) return "ecology";
+
+      return "general";
+    }
+
+
+
+    function iconKeyFor(word){
+      const w = normalizeWord(word);
+      if (ICON_KEY[w]) return ICON_KEY[w];
+      // fuzzy fallbacks
+      if (w.includes("dna")) return "dna";
+      if (w.includes("atom")) return "atom";
+      if (w.includes("food")) return "network";
+      if (w.includes("energy")) return "arrows";
+      if (w.includes("decomp")) return "mushroom";
+      if (w.includes("producer")) return "plant";
+      if (w.includes("consumer")) return "mouth";
+      if (w.includes("symbio")) return "link";
+      if (w.includes("habitat")) return "house";
+      if (w.includes("niche")) return "puzzle";
+      if (w.includes("micro")) return "cell";
+      if (w.includes("ecosystems:")) return "globe";
+      return "leaf";
+    }
+
+    function svgDataUri(svgString){
+      return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svgString.trim());
+    }
+
+    function iconFor(word){
+      const cat = categoryFor(word);
+      const pal = CATEGORY[cat] || CATEGORY.general;
+      const key = iconKeyFor(word);
+      const maker = SVG[key] || SVG.leaf;
+      return svgDataUri(maker(pal));
+    }
+
 
     const VOCAB = [
       "Atom","DNA","Biodiversity","Ecosystem","Abiotic factors","Biotic factors","Species","Genetic diversity",
@@ -656,14 +1143,6 @@
 
     const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
     const randInt = (a,b) => Math.floor(Math.random()*(b-a+1))+a;
-
-    function iconFor(word){
-      const w = word.toLowerCase();
-      if (w.includes("dna")) return ICONS.dna;
-      if (w.includes("micro") || w.includes("microscopic")) return ICONS.microscope;
-      if (w.includes("atom")) return ICONS.atom;
-      return ICONS.leaf;
-    }
 
     const CHALLENGES = [
       (word) => ({ title: "Define it", text: `In 1–2 sentences, define <b>${word}</b> in your own words.`, ext: "Give a real-life example." }),
@@ -786,6 +1265,13 @@
         const tile = document.createElement("div");
         tile.className = "tile";
         tile.dataset.index = i;
+
+        const cat = categoryFor(word);
+        tile.dataset.cat = cat;
+        const pal = CATEGORY[cat] || CATEGORY.general;
+        tile.style.setProperty("--cat-border", pal.border);
+        tile.style.setProperty("--cat-stripe", pal.stripe);
+        tile.style.setProperty("--cat-bg", `linear-gradient(180deg, ${pal.bg1}, ${pal.bg2})`);
 
         const occ = document.createElement("div");
         occ.className = "occupants";
