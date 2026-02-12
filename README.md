@@ -9,8 +9,6 @@ This project is ideal for teachers who want a quick, engaging way to reinforce:
 - adaptations and survival
 - scientific vocabulary and reasoning
 
----
-
 # Learning Goals
 
 Students will be able to:
@@ -20,9 +18,7 @@ Students will be able to:
 - justify classification choices using scientific reasoning
 - reflect on biodiversity and human impact
 
----
-
-# For Teachers: How to Use in Class
+## For Teachers: How to Use in Class
 
 ### Suggested Lesson Flow (40–60 minutes)
 1. **Warm-up (5–10 min)**  
@@ -39,9 +35,7 @@ Students will be able to:
 - **Stations**: rotate groups through the game + hands-on sorting cards  
 - **Whole-class**: projector mode, teacher mediates decisions and prompts
 
----
-
-# ✅ Classroom Rules (Simple & Clear)
+## ✅ Classroom Rules (Simple & Clear)
 
 To keep the activity productive:
 1. **Materials on the table**: each group must have **one blank sheet of paper**, **a pencil**, and an **eraser** on the desk.
@@ -52,9 +46,7 @@ To keep the activity productive:
 6. **Use scientific vocabulary**: challenge yourself to use correct terms.
 7. **Be kind & collaborative**: disagreements are part of science — discuss respectfully.
 
----
-
-# Teacher Prompts (During Gameplay)
+## Teacher Prompts (During Gameplay)
 
 Use these to deepen thinking:
 - “What evidence supports that classification?”
@@ -63,18 +55,14 @@ Use these to deepen thinking:
 - “How might an adaptation help it survive in its habitat?”
 - “What would happen if this species disappeared from the ecosystem?”
 
----
-
-# 🧾 Assessment Ideas
+## 🧾 Assessment Ideas
 
 Quick and easy options:
 - **Exit ticket**: “One new concept I learned + one question I still have.”
 - **Mini-rubric** (0–2 points each): vocabulary, reasoning, collaboration, accuracy
 - **Reflection**: “How does biodiversity support ecosystem stability?”
 
----
-
-# Curriculum Connections
+## Curriculum Connections
 
 Works well with outcomes related to:
 - classification of organisms
@@ -83,9 +71,7 @@ Works well with outcomes related to:
 - human impact on biodiversity
 - scientific inquiry and communication
 
----
-
-# 🚀 Run Locally (Quick Start)
+## 🚀 Run Locally (Quick Start)
 
 1. Download or clone this repository
 2. Open the project folder
