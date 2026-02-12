@@ -1,4 +1,4 @@
-# Biodiversity: Living Things Game 🕹️🌿🧬
+# Biodiversity: Living Things Online Board Game 🕹️🧬🔬🦠🧫
 
 An interactive, classroom-friendly game to support **Biodiversity / Diversity of Living Things** learning — designed for **Middle Years / Year 6–9** contexts and adaptable to different curricula.
 
@@ -11,7 +11,7 @@ This project is ideal for teachers who want a quick, engaging way to reinforce:
 
 ---
 
-## 🎯 Learning Goals
+# Learning Goals
 
 Students will be able to:
 - identify key characteristics of major groups of living things
@@ -22,7 +22,7 @@ Students will be able to:
 
 ---
 
-## 👩‍🏫 For Teachers: How to Use in Class
+# For Teachers: How to Use in Class
 
 ### Suggested Lesson Flow (40–60 minutes)
 1. **Warm-up (5–10 min)**  
@@ -34,14 +34,14 @@ Students will be able to:
 4. **Exit ticket (5 min)**  
    1 short written response or a mini-quiz.
 
-### Grouping Options
+## Grouping Options
 - **Pairs** (recommended): encourages discussion and peer explanation  
 - **Stations**: rotate groups through the game + hands-on sorting cards  
 - **Whole-class**: projector mode, teacher mediates decisions and prompts
 
 ---
 
-## ✅ Classroom Rules (Simple & Clear)
+# ✅ Classroom Rules (Simple & Clear)
 
 To keep the activity productive:
 1. **Materials on the table**: each group must have **one blank sheet of paper**, **a pencil**, and an **eraser** on the desk.
@@ -54,7 +54,7 @@ To keep the activity productive:
 
 ---
 
-## 🧠 Teacher Prompts (During Gameplay)
+# Teacher Prompts (During Gameplay)
 
 Use these to deepen thinking:
 - “What evidence supports that classification?”
@@ -65,7 +65,7 @@ Use these to deepen thinking:
 
 ---
 
-## 🧾 Assessment Ideas
+# 🧾 Assessment Ideas
 
 Quick and easy options:
 - **Exit ticket**: “One new concept I learned + one question I still have.”
@@ -74,7 +74,7 @@ Quick and easy options:
 
 ---
 
-## 🧩 Curriculum Connections
+# Curriculum Connections
 
 Works well with outcomes related to:
 - classification of organisms
@@ -85,7 +85,7 @@ Works well with outcomes related to:
 
 ---
 
-## 🚀 Run Locally (Quick Start)
+# 🚀 Run Locally (Quick Start)
 
 1. Download or clone this repository
 2. Open the project folder
