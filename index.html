@@ -185,6 +185,12 @@
       border: 3px solid var(--cat-border, rgba(0,0,0,.10));
       box-shadow: none;
     }
+    /* NEW: red button for "Try again" */
+    button.danger{
+      background: rgba(231,76,60,.95);
+      box-shadow: 0 8px 18px rgba(231,76,60,.22);
+    }
+    button.danger:hover{ filter: brightness(1.03); }
 
     .stat{
       background: rgba(255,255,255,.88);
@@ -373,7 +379,6 @@
       box-shadow: inset 0 0 0 2px rgba(255,255,255,.85), 0 2px 8px rgba(0,0,0,.12);
     }
 
-    
     /* === Category styling (icons + borders) === */
     .tile::before{
       content:"";
@@ -387,7 +392,6 @@
     .tileTop{ position: relative; z-index: 1; }
     .tileMeta{ position: relative; z-index: 1; }
     .occupants{ z-index: 2; }
-
 
     .modalBackdrop{
       position: fixed;
@@ -618,7 +622,7 @@
           <h3 id="modalTitle">Tile</h3>
           <div class="muted" id="modalMeta"></div>
         </div>
-        <button class="ghost" id="btnClose">✕ Close</button>
+        <!-- Close button removed -->
       </div>
       <div class="modalBody">
         <div class="challenge" id="challengeBox"></div>
@@ -628,6 +632,7 @@
         </div>
       </div>
       <div class="modalFooter">
+        <button class="danger" id="btnTryAgain">⏳ Try again, wait for next turn</button>
         <button id="btnBadge">✅ Give current player a badge</button>
         <button class="secondary" id="btnNewChallenge">🔁 New challenge</button>
       </div>
@@ -635,7 +640,6 @@
   </div>
 
   <script>
-    
     // === Local, hand-drawn style SVG icons (no external dependencies) ===
     const CATEGORY = {
       ecosystems: { border: "#0b84a5", stripe: "#34a853", a: "#0b84a5", b: "#2ecc71", bg1: "rgba(11,132,165,.13)", bg2: "rgba(46,204,113,.10)" },
@@ -824,6 +828,22 @@
           <path d="M20 32l-8-6M44 32l8-6M20 42l-10 0M44 42l10 0M24 50l-8 6M40 50l8 6" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round"/>
           <path d="M28 18l-8-8M36 18l8-8" stroke="${p.a}" stroke-width="3" stroke-linecap="round"/>
         </svg>`,
+      /* NEW: Arachnids icon (uses animals palette automatically) */
+      spider: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <g fill="rgba(243,156,18,.16)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="32" cy="34" r="10"/>
+            <circle cx="32" cy="22" r="6"/>
+          </g>
+          <g stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round">
+            <path d="M22 30l-10-6"/><path d="M22 34l-12 0"/><path d="M22 38l-10 6"/>
+            <path d="M42 30l10-6"/><path d="M42 34l12 0"/><path d="M42 38l10 6"/>
+          </g>
+          <g fill="${p.a}">
+            <circle cx="29" cy="21" r="1.6"/><circle cx="35" cy="21" r="1.6"/>
+          </g>
+          <path d="M28 26c4 3 8 3 12 0" fill="none" stroke="${p.a}" stroke-width="3" stroke-linecap="round"/>
+        </svg>`,
       spine: (p) => `
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
           <path d="M32 10v44" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round"/>
@@ -937,7 +957,6 @@
           <circle cx="34" cy="40" r="3" fill="${p.a}"/>
           <circle cx="40" cy="30" r="2.5" fill="${p.b}"/>
         </svg>`,
-
       tag: (p) => `
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
           <path d="M20 18h22l10 14-10 14H20L10 32l10-14z"
@@ -1003,6 +1022,7 @@
       "vertebrates":"spine",
       "arthropods":"bug",
       "mollusks":"shell",
+      "arachnids":"spider",
       "fish":"fish",
       "amphibians":"frog",
       "reptiles":"lizard",
@@ -1013,7 +1033,6 @@
       "microscopic life":"cell",
       "microscopic organisms":"cell",
       "microscopic ecosystems":"petri",
-      "microscopic diversity":"cell",
       "microscopic observation":"microscope",
       "adaptation":"chameleon",
       "behavioral adaptation":"footprint",
@@ -1023,7 +1042,6 @@
       "camouflage":"chameleon"
     };
 
-    // Icons not explicitly mapped fall back by keyword match
     function normalizeWord(word){
       return String(word || "").trim().toLowerCase();
     }
@@ -1032,7 +1050,6 @@
       const raw = String(word ?? "").trim();
       const lower = raw.toLowerCase();
 
-      // Ecosystems sub-palettes: "Ecosystems: X"
       if (lower.startsWith("ecosystems:")) {
         const sub = lower.split(":").slice(1).join(":").trim();
         if (sub.includes("aquatic")) return "eco_aquatic";
@@ -1051,21 +1068,15 @@
 
       // Animals
       const animals = new Set([
-        "invertebrates","vertebrates","arthropods","mollusks",
+        "invertebrates","vertebrates","arthropods","mollusks","arachnids",
         "fish","amphibians","reptiles","birds","mammals"
       ]);
       if (animals.has(w)) return "animals";
 
-      // Micro / microscopic
       if (w.includes("micro") || w.includes("microscopic")) return "micro";
-
-      // Genetics & matter
       if (w.includes("dna") || w.includes("genetic") || w.includes("atom")) return "genetics";
-
-      // Evolution / adaptation
       if (w.includes("evolution") || w.includes("natural selection") || w.includes("camouflage") || w.includes("adaptation")) return "evolution";
 
-      // Ecosystems & ecology (non "Ecosystems:" tiles)
       const eco = new Set([
         "biodiversity","ecosystem","abiotic factors","biotic factors","species",
         "habitat","niche","food web","energy flow","decomposers","producers","consumers",
@@ -1076,12 +1087,10 @@
       return "general";
     }
 
-
-
     function iconKeyFor(word){
       const w = normalizeWord(word);
       if (ICON_KEY[w]) return ICON_KEY[w];
-      // fuzzy fallbacks
+
       if (w.includes("dna")) return "dna";
       if (w.includes("atom")) return "atom";
       if (w.includes("food")) return "network";
@@ -1109,16 +1118,16 @@
       return svgDataUri(maker(pal));
     }
 
-
+    /* UPDATED: 48 tiles, removed previous #42 and inserted Arachnids between #31 and #32 */
     const VOCAB = [
       "Atom","DNA","Biodiversity","Ecosystem","Abiotic factors","Biotic factors","Species","Genetic diversity",
       "Habitat","Niche","Ecosystem","Food web","Energy flow","Decomposers","Producers","Consumers",
       "Ecological balance","Symbiosis","Ecosystems: Aquatic","Ecosystems: Forest","Ecosystems: Grassland",
       "Ecosystems: Desert","Ecosystems: Marine","Ecosystems: Freshwater","Ecosystems: Coral reef",
       "Ecosystems: Tundra","Ecosystems: Urban","Invertebrates","Vertebrates","Arthropods","Mollusks",
-      "Fish","Amphibians","Reptiles","Birds","Mammals","Microorganisms","Microbes","Microscopic life",
-      "Microscopic organisms","Microscopic ecosystems","Microscopic diversity","Microscopic observation",
-      "Adaptation","Behavioral adaptation","Physiological adaptation","Evolution","Natural selection","Camouflage"
+      "Arachnids","Fish","Amphibians","Reptiles","Birds","Mammals","Microorganisms","Microbes","Microscopic life",
+      "Microscopic organisms","Microscopic ecosystems","Microscopic observation","Adaptation","Behavioral adaptation",
+      "Physiological adaptation","Evolution","Natural selection"
     ];
 
     const BOARD_TILES = 48;
@@ -1187,7 +1196,7 @@
     const btnEndTurn = document.getElementById("btnEndTurn");
     const btnReset = document.getElementById("btnReset");
 
-    const btnClose = document.getElementById("btnClose");
+    const btnTryAgain = document.getElementById("btnTryAgain");
     const btnBadge = document.getElementById("btnBadge");
     const btnNewChallenge = document.getElementById("btnNewChallenge");
 
@@ -1312,7 +1321,7 @@
       });
     }
 
-    /* ✅ UPDATED: now shows Dice result inside modal meta */
+    /* shows Dice result inside modal meta */
     function openTile(i){
       selectedTileIndex = i;
       const word = boardWords[i];
@@ -1331,7 +1340,6 @@
         moveInfo = ` Pending move: ${pendingMove.from + 1} → ${pendingMove.to + 1}`;
       }
 
-      // Example: "Tile #12 • Current: Player 3 • Dice result: 4 • Pending move: 10 → 14"
       modalMeta.textContent = `Tile #${i+1} • Current: Player ${p.id} •${diceInfo}${moveInfo}`;
 
       challengeBox.innerHTML = `<b>${challenge.title}</b><div>${challenge.text}</div>`;
@@ -1470,16 +1478,19 @@
     btnEndTurn.addEventListener("click", nextPlayer);
     btnReset.addEventListener("click", resetGame);
 
-    btnClose.addEventListener("click", closeAndAdvanceNoBadge);
+    /* NEW: replaces the old Close behavior */
+    btnTryAgain.addEventListener("click", closeAndAdvanceNoBadge);
+
     btnBadge.addEventListener("click", awardBadgeAndAdvance);
     btnNewChallenge.addEventListener("click", newChallenge);
 
+    /* UPDATED: clicking outside or pressing ESC also moves to next turn (no badge) */
     modalBackdrop.addEventListener("click", (e) => {
-      if(e.target === modalBackdrop) closeModal();
+      if(e.target === modalBackdrop) closeAndAdvanceNoBadge();
     });
 
     window.addEventListener("keydown", (e) => {
-      if(e.key === "Escape") closeModal();
+      if(e.key === "Escape") closeAndAdvanceNoBadge();
     });
 
     updateHeader();
