@@ -1,6 +1,6 @@
 # Biodiversity: Living Things Online Board Game 🕹️🧬🔬🦠🧫🌱
 
-An interactive, classroom-friendly game to support **Biodiversity / Diversity of Living Things** learning — designed for **Middle Years / Year 6–9** contexts and adaptable to different curricula.
+An interactive, classroom-friendly game to support **Biodiversity / Diversity of Living Things** learning - designed for **Middle Years / Year 6–9** contexts and adaptable to different curricula.
 
 This project is ideal for teachers who want a quick, engaging way to reinforce:
 - classification and taxonomy basics
@@ -30,9 +30,9 @@ To keep the activity productive:
 2. **Play to learn**: focus on reasoning, not just “getting points”.
 3. **Explain your choices**: if you pick an answer, justify it with evidence.
 4. **Respect turn-taking** (pairs/groups): one controls, the other explains; swap roles.
-5. **No spoilers**: don’t shout answers to other groups — ask guiding questions instead.
+5. **No spoilers**: don’t shout answers to other groups - ask guiding questions instead.
 6. **Use scientific vocabulary**: challenge yourself to use correct terms.
-7. **Be kind & collaborative**: disagreements are part of science — discuss respectfully.
+7. **Be kind & collaborative**: disagreements are part of science - discuss respectfully.
 
 ## Teacher Prompts (During Gameplay)
 
@@ -63,6 +63,6 @@ Works well with outcomes related to:
 
 ## ✉️ Contact
 
-Created by **Lucas Ferreira**.  
-If you use this in your classroom, I’d love to hear how it went — feedback and suggestions are welcome!
+Created by Lucas Ferreira (MSc. Physics Education, PhD student Science Education).  
+If you use this in your classroom, I’d love to hear how it went - feedback and suggestions are welcome!
 **Email:** [lucasferreiraunb@gmail.com](mailto:lucasferreiraunb@gmail.com)
