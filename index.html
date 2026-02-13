@@ -185,7 +185,6 @@
       border: 3px solid var(--cat-border, rgba(0,0,0,.10));
       box-shadow: none;
     }
-    /* NEW: red button for "Try again" */
     button.danger{
       background: rgba(231,76,60,.95);
       box-shadow: 0 8px 18px rgba(231,76,60,.22);
@@ -295,15 +294,12 @@
       flex: 1 1 auto;
       min-height: 0;
 
-      /* ✅ Background image (50% opacity) + overlay for readability */
       background-image:
         linear-gradient(rgba(255,255,255,.80), rgba(255,255,255,.80)),
         url("images/board-bg.png");
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-
-      /* ✅ Makes the image effectively ~50% visible behind the white overlay */
       background-blend-mode: normal;
 
       border: 3px solid var(--cat-border, rgba(0,0,0,.10));
@@ -316,7 +312,6 @@
       -webkit-overflow-scrolling: touch;
       overscroll-behavior: contain;
     }
-
 
     @media (min-width: 1200px){ .board{ grid-template-columns: repeat(8, 1fr); } }
     @media (min-width: 900px) and (max-width: 1199px){ .board{ grid-template-columns: repeat(7, 1fr); } }
@@ -392,7 +387,6 @@
       box-shadow: inset 0 0 0 2px rgba(255,255,255,.85), 0 2px 8px rgba(0,0,0,.12);
     }
 
-    /* === Category styling (icons + borders) === */
     .tile::before{
       content:"";
       position:absolute;
@@ -637,7 +631,6 @@
           <h3 id="modalTitle">Tile</h3>
           <div class="muted" id="modalMeta"></div>
         </div>
-        <!-- Close button removed -->
       </div>
       <div class="modalBody">
         <div class="challenge" id="challengeBox"></div>
@@ -656,7 +649,23 @@
 
   <script>
     // === Local, hand-drawn style SVG icons (no external dependencies) ===
+
+    // ✅ NEW: Dice roll SFX (expects /sfx/dice-roll.mp3 in your project)
+    const sfxDice = new Audio("sfx/dice-roll.mp3");
+    sfxDice.preload = "auto";
+    // sfxDice.volume = 0.9; // optional
+
     const CATEGORY = {
+      // NEW: Start tile palette (pure white)
+      start: {
+      border: "rgba(0,0,0,.09)",   // sem borda cinza
+      stripe: "rgba(0,0,0,.09)",   // sem faixa cinza
+      a: "#2d2d2d",
+      b: "#6b6b6b",
+      bg1: "rgba(255,255,255,1)",  // branco puro
+      bg2: "rgba(255,255,255,1)"   // branco puro (sem gradiente cinza)
+      },
+
       ecosystems: { border: "#0b84a5", stripe: "#34a853", a: "#0b84a5", b: "#2ecc71", bg1: "rgba(11,132,165,.13)", bg2: "rgba(46,204,113,.10)" },
       eco_aquatic: { border: "#1e63ff", stripe: "#0b3d91", a: "#1e63ff", b: "#5aa7ff", bg1: "rgba(30,99,255,.13)", bg2: "rgba(90,167,255,.10)" },
       eco_forest: { border: "#1b5e20", stripe: "#0f3d14", a: "#1b5e20", b: "#43a047", bg1: "rgba(27,94,32,.13)", bg2: "rgba(67,160,71,.10)" },
@@ -667,15 +676,28 @@
       eco_coralreef: { border: "#00e5ff", stripe: "#00b8d4", a: "#00e5ff", b: "#18ffff", bg1: "rgba(0,229,255,.13)", bg2: "rgba(24,255,255,.10)" },
       eco_tundra: { border: "#ff8f00", stripe: "#ef6c00", a: "#ff8f00", b: "#ffcc80", bg1: "rgba(255,143,0,.13)", bg2: "rgba(255,204,128,.10)" },
       eco_urban: { border: "#757575", stripe: "#424242", a: "#757575", b: "#bdbdbd", bg1: "rgba(117,117,117,.13)", bg2: "rgba(189,189,189,.10)" },
-      animals:    { border: "#f39c12", stripe: "#e67e22", a: "#f39c12", b: "#e67e22", bg1: "rgba(243,156,18,.14)", bg2: "rgba(230,126,34,.10)" }, // orange
-      micro:      { border: "#8e44ad", stripe: "#9b59b6", a: "#8e44ad", b: "#9b59b6", bg1: "rgba(142,68,173,.14)", bg2: "rgba(155,89,182,.10)" }, // purple
+      animals:    { border: "#f39c12", stripe: "#e67e22", a: "#f39c12", b: "#e67e22", bg1: "rgba(243,156,18,.14)", bg2: "rgba(230,126,34,.10)" },
+      micro:      { border: "#8e44ad", stripe: "#9b59b6", a: "#8e44ad", b: "#9b59b6", bg1: "rgba(142,68,173,.14)", bg2: "rgba(155,89,182,.10)" },
       genetics:   { border: "#16a085", stripe: "#2bbbad", a: "#16a085", b: "#2bbbad", bg1: "rgba(22,160,133,.14)", bg2: "rgba(43,187,173,.10)" },
-      ecology:    { border: "#2ecc71", stripe: "#34a853", a: "#2ecc71", b: "#34a853", bg1: "rgba(46,204,113,.14)", bg2: "rgba(52,168,83,.10)" }, // green
+      ecology:    { border: "#2ecc71", stripe: "#34a853", a: "#2ecc71", b: "#34a853", bg1: "rgba(46,204,113,.14)", bg2: "rgba(52,168,83,.10)" },
       evolution:  { border: "#c0392b", stripe: "#e74c3c", a: "#c0392b", b: "#e74c3c", bg1: "rgba(192,57,43,.14)", bg2: "rgba(231,76,60,.10)" },
       general:    { border: "rgba(14,26,43,.22)", stripe: "rgba(14,26,43,.16)", a: "#1450c8", b: "#0e1a2b", bg1: "rgba(255,255,255,.92)", bg2: "rgba(255,255,255,.88)" }
     };
 
     const SVG = {
+      // NEW: Start/finish flag icon
+      startflag: (p) => `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+          <path d="M18 10v44" fill="none" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round"/>
+          <path d="M18 12h26l-6 8 6 8H18z"
+                fill="rgba(255,255,255,.85)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linejoin="round"/>
+          <g stroke="rgba(14,26,43,.70)" stroke-width="2" stroke-linecap="round">
+            <path d="M22 16h6M22 20h6M22 24h6"/>
+            <path d="M32 16h6M32 20h6M32 24h6"/>
+          </g>
+          <path d="M26 50h24" fill="none" stroke="${p.b}" stroke-width="3" stroke-linecap="round"/>
+          <path d="M44 50l6-4-6-4" fill="none" stroke="${p.a}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>`,
       atom: (p) => `
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
           <g fill="none" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
@@ -843,7 +865,6 @@
           <path d="M20 32l-8-6M44 32l8-6M20 42l-10 0M44 42l10 0M24 50l-8 6M40 50l8 6" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round"/>
           <path d="M28 18l-8-8M36 18l8-8" stroke="${p.a}" stroke-width="3" stroke-linecap="round"/>
         </svg>`,
-      /* NEW: Arachnids icon (uses animals palette automatically) */
       spider: (p) => `
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
           <g fill="rgba(243,156,18,.16)" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
@@ -1007,6 +1028,7 @@
     };
 
     const ICON_KEY = {
+      "start!":"startflag",
       "atom":"atom",
       "dna":"dna",
       "biodiversity":"globe",
@@ -1043,8 +1065,7 @@
       "reptiles":"lizard",
       "birds":"bird",
       "mammals":"mammal",
-      "microorganisms":"cell",
-      "microbes":"cell",
+      "microorganism":"cell",
       "microscopic life":"cell",
       "microscopic organisms":"cell",
       "microscopic ecosystems":"petri",
@@ -1065,6 +1086,8 @@
       const raw = String(word ?? "").trim();
       const lower = raw.toLowerCase();
 
+      if (normalizeWord(word) === "start!") return "start";
+
       if (lower.startsWith("ecosystems:")) {
         const sub = lower.split(":").slice(1).join(":").trim();
         if (sub.includes("aquatic")) return "eco_aquatic";
@@ -1081,7 +1104,6 @@
 
       const w = normalizeWord(word);
 
-      // Animals
       const animals = new Set([
         "invertebrates","vertebrates","arthropods","mollusks","arachnids",
         "fish","amphibians","reptiles","birds","mammals"
@@ -1133,16 +1155,17 @@
       return svgDataUri(maker(pal));
     }
 
-    /* UPDATED: 48 tiles, removed previous #42 and inserted Arachnids between #31 and #32 */
     const VOCAB = [
+      "Start!",
       "Atom","DNA","Biodiversity","Ecosystem","Abiotic factors","Biotic factors","Species","Genetic diversity",
       "Habitat","Niche","Ecosystem","Food web","Energy flow","Decomposers","Producers","Consumers",
       "Ecological balance","Symbiosis","Ecosystems: Aquatic","Ecosystems: Forest","Ecosystems: Grassland",
       "Ecosystems: Desert","Ecosystems: Marine","Ecosystems: Freshwater","Ecosystems: Coral reef",
       "Ecosystems: Tundra","Ecosystems: Urban","Invertebrates","Vertebrates","Arthropods","Mollusks",
-      "Arachnids","Fish","Amphibians","Reptiles","Birds","Mammals","Microorganisms","Microbes","Microscopic life",
-      "Microscopic organisms","Microscopic ecosystems","Microscopic observation","Adaptation","Behavioral adaptation",
-      "Physiological adaptation","Evolution","Natural selection"
+      "Arachnids","Fish","Amphibians","Reptiles","Birds","Mammals",
+      "Microorganism",
+      "Microscopic life","Microscopic organisms","Microscopic ecosystems","Microscopic observation",
+      "Adaptation","Behavioral adaptation","Physiological adaptation","Evolution","Natural selection"
     ];
 
     const BOARD_TILES = 48;
@@ -1324,7 +1347,7 @@
 
         const meta = document.createElement("div");
         meta.className = "tileMeta";
-        meta.innerHTML = `<span class="tileIndex">#${String(i+1).padStart(2,"0")}</span><span>Tap</span>`;
+        meta.innerHTML = `<span class="tileIndex">#${String(i+1).padStart(2,"0")}</span>`;
 
         tile.appendChild(occ);
         tile.appendChild(top);
@@ -1336,7 +1359,6 @@
       });
     }
 
-    /* shows Dice result inside modal meta */
     function openTile(i){
       selectedTileIndex = i;
       const word = boardWords[i];
@@ -1399,6 +1421,14 @@
 
     function rollDice(){
       if(!turnActive) return;
+
+      // ✅ NEW: play dice roll sound every time Roll Dice is clicked
+      try{
+        sfxDice.currentTime = 0; // restart if already playing
+        sfxDice.play();
+      } catch (err) {
+        // ignore autoplay/security errors
+      }
 
       lastRoll = randInt(1,6);
       const p = PLAYERS[current];
@@ -1493,13 +1523,11 @@
     btnEndTurn.addEventListener("click", nextPlayer);
     btnReset.addEventListener("click", resetGame);
 
-    /* NEW: replaces the old Close behavior */
     btnTryAgain.addEventListener("click", closeAndAdvanceNoBadge);
 
     btnBadge.addEventListener("click", awardBadgeAndAdvance);
     btnNewChallenge.addEventListener("click", newChallenge);
 
-    /* UPDATED: clicking outside or pressing ESC also moves to next turn (no badge) */
     modalBackdrop.addEventListener("click", (e) => {
       if(e.target === modalBackdrop) closeAndAdvanceNoBadge();
     });
