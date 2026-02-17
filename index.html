@@ -3,35 +3,29 @@
 
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport"
-    content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
 
   <title>Biodiversity Battle Online Board Game</title>
   <meta name="description"
     content="Biodiversity Battle is a free online board game for Science classes. Play, learn key biology terms, and earn badges. Created by Lucas Ferreira." />
   <meta name="robots" content="index,follow" />
-  <link rel="canonical"
-    href="https://cometsinthesky.github.io/biodiversity-battle-game/" />
+  <link rel="canonical" href="https://cometsinthesky.github.io/biodiversity-battle-game/" />
 
   <!-- Social Preview, Open Graph for Facebook, LinkedIn, etc. -->
   <meta property="og:title" content="Biodiversity Battle Online Board Game" />
   <meta property="og:description"
     content="Free online board game for Science lessons about biodiversity, ecosystems, and biology." />
   <meta property="og:type" content="website" />
-  <meta property="og:url"
-    content="https://cometsinthesky.github.io/biodiversity-battle-game/" />
+  <meta property="og:url" content="https://cometsinthesky.github.io/biodiversity-battle-game/" />
   <meta property="og:image"
     content="https://cometsinthesky.github.io/biodiversity-battle-game/images/biodiversity-battle-og-image.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
 
   <!-- FAVICON -->
-  <link rel="apple-touch-icon" sizes="180x180"
-    href="./image-icons/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32"
-    href="./image-icons/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16"
-    href="./image-icons/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="./image-icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="./image-icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./image-icons/favicon-16x16.png">
   <link rel="manifest" href="./image-icons/site.webmanifest">
 
   <style>
@@ -246,7 +240,7 @@
       filter: brightness(1.03);
     }
 
-    /* NEW: green play again button */
+    /* green play again button */
     button.success {
       background: rgba(46, 204, 113, .95);
       box-shadow: 0 10px 22px rgba(46, 204, 113, .22);
@@ -651,7 +645,7 @@
       border-radius: 16px;
     }
 
-    /* NEW: win overlay scoreboard */
+    /* win overlay scoreboard */
     .scoreTable {
       display: grid;
       gap: 10px;
@@ -712,6 +706,49 @@
         0 0 26px var(--winGlowSoft, rgba(20, 80, 200, .12)),
         0 18px 45px rgba(0, 0, 0, .10);
       transform: translateY(-1px);
+    }
+
+    /* NEW: bonus overlay */
+    .bonusOverlay {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 65;
+      background: rgba(0, 0, 0, .50);
+    }
+
+    .bonusCard {
+      width: min(560px, 100%);
+      background: rgba(255, 255, 255, .96);
+      border-radius: 18px;
+      border: 1px solid rgba(0, 0, 0, .12);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, .28);
+      padding: 18px;
+      text-align: center;
+    }
+
+    .bonusCard h3 {
+      margin: 0 0 8px;
+      font-size: clamp(18px, 2.4vw, 22px);
+      line-height: 1.2;
+      font-weight: 1000;
+    }
+
+    .bonusCard p {
+      margin: 0 0 14px;
+      color: rgba(14, 26, 43, .70);
+      font-size: var(--small-font);
+      line-height: 1.35;
+    }
+
+    .bonusCard button {
+      width: 100%;
+      font-size: clamp(14px, 1.6vw, 16px);
+      padding: 14px 16px;
+      border-radius: 16px;
     }
 
     footer {
@@ -809,22 +846,18 @@
             <div class="stat">
               <h2>Dice</h2>
               <div class="big" id="diceVal">—</div>
-              <div class="muted" id="diceHint">Roll 1–6 (movement applies only
-                if badge is awarded)</div>
+              <div class="muted" id="diceHint">Roll 1–6 (movement applies only if badge is awarded)</div>
             </div>
             <div class="stat">
               <h2>Current Player</h2>
               <div class="big" id="currentPlayer">1</div>
-              <div class="muted" id="turnHint">Press “Play!” to start the turn.
-              </div>
+              <div class="muted" id="turnHint">Press “Play!” to start the turn.</div>
             </div>
           </div>
 
           <div class="stat">
             <h2>Win condition</h2>
-            <div class="muted">First player to earn <b>5 badges</b> wins. (Max:
-              <b>1 badge per turn</b>.)
-            </div>
+            <div class="muted">First player to earn <b>5 badges</b> wins. (Max: <b>1 badge per turn</b>.)</div>
           </div>
 
           <div class="players" id="players"></div>
@@ -835,8 +868,7 @@
         <div class="boardHeader">
           <div>
             <h2>Clickable Board</h2>
-            <p class="muted">Scroll inside the board if needed (tablet/phone
-              friendly).</p>
+            <p class="muted">Scroll inside the board if needed (tablet/phone friendly).</p>
           </div>
           <div class="pill">Tap tiles</div>
         </div>
@@ -847,14 +879,11 @@
 
     <footer>
       <div class="footerLine">
-        Created by Lucas Ferreira (MSc. Physics Education, PhD student Science
-        Education (UnB/IF/PPGEduC)
+        Created by Lucas Ferreira (MSc. Physics Education, PhD student Science Education (UnB/IF/PPGEduC)
         &nbsp;&nbsp;|&nbsp;&nbsp;
-        <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/"
-          target="_blank" rel="noopener noreferrer">CC BY-NC-ND 4.0</a>
+        <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">CC BY-NC-ND 4.0</a>
         &nbsp;&nbsp;|&nbsp;&nbsp;
-        <a href="https://github.com/cometsinthesky/biodiversity-living-things-game"
-          target="_blank" rel="noopener noreferrer">GitHub Page</a>
+        <a href="https://github.com/cometsinthesky/biodiversity-living-things-game" target="_blank" rel="noopener noreferrer">GitHub Page</a>
       </div>
     </footer>
   </div>
@@ -867,7 +896,7 @@
     </div>
   </div>
 
-  <!-- NEW: Win overlay -->
+  <!-- Win overlay -->
   <div class="winOverlay" id="winOverlay" aria-hidden="true">
     <div class="winCard">
       <h3 id="winTitle">Congratulations!</h3>
@@ -879,8 +908,16 @@
     </div>
   </div>
 
-  <div class="modalBackdrop" id="modalBackdrop" role="dialog" aria-modal="true"
-    aria-hidden="true">
+  <!-- NEW: Bonus overlay -->
+  <div class="bonusOverlay" id="bonusOverlay" aria-hidden="true">
+    <div class="bonusCard">
+      <h3 id="bonusTitle">Bonus Move!</h3>
+      <p id="bonusText">Player X has 🏅 badges. Bonus: Player X moved +N tiles.</p>
+      <button class="secondary" id="btnBonusNext">Next player turn!</button>
+    </div>
+  </div>
+
+  <div class="modalBackdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="modal">
       <div class="modalHeader">
         <div>
@@ -896,8 +933,7 @@
         </div>
       </div>
       <div class="modalFooter">
-        <button class="danger" id="btnTryAgain">⏳ Try again, wait for next
-          turn</button>
+        <button class="danger" id="btnTryAgain">⏳ Try again, wait for next turn</button>
         <button id="btnBadge">✅ Give current player a badge</button>
         <button class="secondary" id="btnNewChallenge">🔁 New challenge</button>
       </div>
@@ -1448,15 +1484,18 @@
 
     let pendingMove = null; // { playerIndex, from, to }
 
-    // NEW: game over guard
+    // game over guard
     let gameOver = false;
+
+    // bonus overlay state (freeze until user clicks Next)
+    let waitingBonusAck = false;
 
     const boardWords = Array.from({ length: BOARD_TILES }, (_, i) => VOCAB[i % VOCAB.length]);
 
     const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
     const randInt = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
 
-    // NEW: convert hex (#RGB / #RRGGBB) to rgba()
+    // convert hex (#RGB / #RRGGBB) to rgba()
     function hexToRgba(hex, alpha = 1) {
       const h = String(hex || "").trim();
       if (h.startsWith("rgba(") || h.startsWith("rgb(")) return h;
@@ -1510,12 +1549,18 @@
     const turnMsg = document.getElementById("turnMsg");
     const btnPlay = document.getElementById("btnPlay");
 
-    // NEW: win overlay elements
+    // win overlay elements
     const winOverlay = document.getElementById("winOverlay");
     const winTitle = document.getElementById("winTitle");
     const winSubtitle = document.getElementById("winSubtitle");
     const scoreTable = document.getElementById("scoreTable");
     const btnPlayAgain = document.getElementById("btnPlayAgain");
+
+    // bonus overlay elements
+    const bonusOverlay = document.getElementById("bonusOverlay");
+    const bonusTitle = document.getElementById("bonusTitle");
+    const bonusText = document.getElementById("bonusText");
+    const btnBonusNext = document.getElementById("btnBonusNext");
 
     const btnRoll = document.getElementById("btnRoll");
     const btnEndTurn = document.getElementById("btnEndTurn");
@@ -1547,9 +1592,16 @@
         }
       }
 
+      // If bonus overlay is waiting, lock turn controls
+      if (waitingBonusAck && !gameOver) {
+        turnHintEl.textContent = "Bonus applied. Press “Next player turn!”";
+        btnRoll.disabled = true;
+        btnEndTurn.disabled = true;
+      }
+
       diceValEl.textContent = (lastRoll === null) ? "—" : String(lastRoll);
 
-      btnBadge.disabled = badgeAwardedThisTurn || gameOver;
+      btnBadge.disabled = badgeAwardedThisTurn || gameOver || waitingBonusAck;
       btnBadge.textContent = badgeAwardedThisTurn
         ? "✅ Badge already awarded this turn"
         : "✅ Give current player a badge";
@@ -1658,7 +1710,7 @@
     }
 
     function openTile(i) {
-      if (gameOver) return;
+      if (gameOver || waitingBonusAck) return;
 
       selectedTileIndex = i;
       const word = boardWords[i];
@@ -1694,7 +1746,7 @@
     }
 
     function showTurnOverlay() {
-      if (gameOver) return;
+      if (gameOver || waitingBonusAck) return;
       const p = PLAYERS[current];
       turnMsg.textContent = `Player ${p.id} it’s your turn!`;
       turnMsg.style.color = p.color;
@@ -1707,10 +1759,11 @@
       turnOverlay.setAttribute("aria-hidden", "true");
     }
 
-    // NEW: win overlay helpers
+    // win overlay helpers
     function showWinOverlay(winnerIndex) {
       const w = PLAYERS[winnerIndex];
       gameOver = true;
+      waitingBonusAck = false;
 
       // play success sound when win box appears
       try {
@@ -1767,6 +1820,7 @@
       // lock turn overlay if visible
       hideTurnOverlay();
       closeModal();
+      hideBonusOverlay();
 
       updateHeader();
       renderPlayers();
@@ -1781,8 +1835,30 @@
       winOverlay.setAttribute("aria-hidden", "true");
     }
 
+    // bonus overlay helpers
+    function showBonusOverlay({ playerIndex, badges, bonusTiles }) {
+      const p = PLAYERS[playerIndex];
+
+      waitingBonusAck = true;
+
+      bonusTitle.textContent = "Bonus Move!";
+      bonusTitle.style.color = p.color;
+
+      const badgeStr = (badges > 0) ? "🏅".repeat(badges) : "—";
+      bonusText.textContent = `${p.name} has ${badgeStr} badges. Bonus: ${p.name} moved +${bonusTiles} tiles.`;
+
+      bonusOverlay.style.display = "flex";
+      bonusOverlay.setAttribute("aria-hidden", "false");
+    }
+
+    function hideBonusOverlay() {
+      waitingBonusAck = false;
+      bonusOverlay.style.display = "none";
+      bonusOverlay.setAttribute("aria-hidden", "true");
+    }
+
     function startTurn() {
-      if (gameOver) return;
+      if (gameOver || waitingBonusAck) return;
 
       badgeAwardedThisTurn = false;
       turnActive = true;
@@ -1797,7 +1873,7 @@
     }
 
     function rollDice() {
-      if (!turnActive || gameOver) return;
+      if (!turnActive || gameOver || waitingBonusAck) return;
 
       // play dice roll sound every time Roll Dice is clicked
       try {
@@ -1821,7 +1897,7 @@
     }
 
     function nextPlayer() {
-      if (gameOver) return;
+      if (gameOver || waitingBonusAck) return;
 
       current = (current + 1) % PLAYERS.length;
       turnActive = false;
@@ -1837,7 +1913,7 @@
     }
 
     function closeAndAdvanceNoBadge() {
-      if (gameOver) return;
+      if (gameOver || waitingBonusAck) return;
       pendingMove = null;
       closeModal();
       nextPlayer();
@@ -1845,6 +1921,7 @@
 
     function resetGame() {
       hideWinOverlay();
+      hideBonusOverlay();
       closeModal();
 
       PLAYERS.forEach(p => { p.pos = 0; p.badges = 0; });
@@ -1855,6 +1932,7 @@
       badgeAwardedThisTurn = false;
       pendingMove = null;
       gameOver = false;
+      waitingBonusAck = false;
 
       updateHeader();
       renderPlayers();
@@ -1863,7 +1941,7 @@
     }
 
     function awardBadgeAndAdvance() {
-      if (badgeAwardedThisTurn || gameOver) return;
+      if (badgeAwardedThisTurn || gameOver || waitingBonusAck) return;
 
       // play win sound ONLY when badge button is clicked
       try {
@@ -1873,15 +1951,17 @@
 
       const p = PLAYERS[current];
 
+      // 1) Apply the pending move (dice) ONLY if badge is awarded
       if (pendingMove && pendingMove.playerIndex === current) {
         p.pos = pendingMove.to;
       }
       pendingMove = null;
 
+      // 2) Give badge
       p.badges = clamp(p.badges + 1, 0, 99);
       badgeAwardedThisTurn = true;
 
-      // WIN CONDITION -> show win overlay (instead of alert + reset)
+      // 3) Win check first (so no bonus overlay on win)
       if (p.badges >= 5) {
         closeModal();
         renderPlayers();
@@ -1890,6 +1970,29 @@
         return;
       }
 
+      // 4) Bonus mapping (as specified)
+      const bonusMap = {
+        2: 5,
+        3: 10,
+        4: 5
+      };
+
+      const bonusTiles = bonusMap[p.badges] ?? 0;
+
+      // 5) If there is a bonus, move extra tiles and show overlay
+      if (bonusTiles > 0) {
+        p.pos = (p.pos + bonusTiles) % BOARD_TILES;
+
+        renderPlayers();
+        renderBoard();
+        closeModal();
+
+        updateHeader(); // locks buttons + updates hints
+        showBonusOverlay({ playerIndex: current, badges: p.badges, bonusTiles });
+        return; // DO NOT advance turn yet
+      }
+
+      // 6) No bonus -> normal flow
       renderPlayers();
       renderBoard();
 
@@ -1898,7 +2001,7 @@
     }
 
     function newChallenge() {
-      if (selectedTileIndex === null || gameOver) return;
+      if (selectedTileIndex === null || gameOver || waitingBonusAck) return;
       const word = boardWords[selectedTileIndex];
       const challenge = pickChallenge(word);
       challengeBox.innerHTML = `<b>${challenge.title}</b><div>${challenge.text}</div>`;
@@ -1912,7 +2015,7 @@
 
     // fail sound ONLY on Try Again button click
     btnTryAgain.addEventListener("click", () => {
-      if (gameOver) return;
+      if (gameOver || waitingBonusAck) return;
       try {
         sfxFail.currentTime = 0;
         sfxFail.play();
@@ -1926,15 +2029,22 @@
     // Play Again button
     btnPlayAgain.addEventListener("click", resetGame);
 
+    // Bonus Next button
+    btnBonusNext.addEventListener("click", () => {
+      if (gameOver) return;
+      hideBonusOverlay();
+      nextPlayer();
+    });
+
     // Note: backdrop click and Escape close WITHOUT fail sound (by design)
     modalBackdrop.addEventListener("click", (e) => {
-      if (gameOver) return;
+      if (gameOver || waitingBonusAck) return;
       if (e.target === modalBackdrop) closeAndAdvanceNoBadge();
     });
 
     window.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
-        if (gameOver) return;
+        if (gameOver || waitingBonusAck) return;
         closeAndAdvanceNoBadge();
       }
     });
