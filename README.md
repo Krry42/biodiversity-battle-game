@@ -4,7 +4,6 @@
        width="300"
        height="300" />
 </p>
-
 ## Biodiversity Battle Online Board Game 🕹️🧬🔬🦠🧫🌱 
 
 An interactive, classroom-friendly game to support **Biodiversity / Diversity of Living Things** learning - designed for **Middle Years / Year 6–9** contexts and adaptable to different curricula.
