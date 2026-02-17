@@ -13,7 +13,7 @@
   <link rel="canonical"
     href="https://cometsinthesky.github.io/biodiversity-battle-game/" />
 
-  <!-- Social Preview, Open Graph para Facebook, LinkedIn, etc. -->
+  <!-- Social Preview, Open Graph for Facebook, LinkedIn, etc. -->
   <meta property="og:title" content="Biodiversity Battle Online Board Game" />
   <meta property="og:description"
     content="Free online board game for Science lessons about biodiversity, ecosystems, and biology." />
@@ -25,7 +25,7 @@
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
 
-  <!-- ADD FAVICON -->
+  <!-- FAVICON -->
   <link rel="apple-touch-icon" sizes="180x180"
     href="./image-icons/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32"
@@ -243,6 +243,16 @@
     }
 
     button.danger:hover {
+      filter: brightness(1.03);
+    }
+
+    /* NEW: green play again button */
+    button.success {
+      background: rgba(46, 204, 113, .95);
+      box-shadow: 0 10px 22px rgba(46, 204, 113, .22);
+    }
+
+    button.success:hover {
       filter: brightness(1.03);
     }
 
@@ -596,7 +606,8 @@
       flex: 0 0 auto;
     }
 
-    .turnOverlay {
+    .turnOverlay,
+    .winOverlay {
       position: fixed;
       inset: 0;
       display: none;
@@ -607,7 +618,8 @@
       background: rgba(0, 0, 0, .50);
     }
 
-    .turnCard {
+    .turnCard,
+    .winCard {
       width: min(560px, 100%);
       background: rgba(255, 255, 255, .96);
       border-radius: 18px;
@@ -617,14 +629,16 @@
       text-align: center;
     }
 
-    .turnCard h3 {
+    .turnCard h3,
+    .winCard h3 {
       margin: 0 0 8px;
       font-size: clamp(18px, 2.4vw, 22px);
       line-height: 1.2;
       font-weight: 1000;
     }
 
-    .turnCard p {
+    .turnCard p,
+    .winCard p {
       margin: 0 0 14px;
       color: rgba(14, 26, 43, .70);
       font-size: var(--small-font);
@@ -635,6 +649,69 @@
       font-size: clamp(14px, 1.6vw, 16px);
       padding: 14px 16px;
       border-radius: 16px;
+    }
+
+    /* NEW: win overlay scoreboard */
+    .scoreTable {
+      display: grid;
+      gap: 10px;
+      margin: 12px 0 14px;
+      text-align: left;
+    }
+
+    .scoreRow {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, .88);
+      border: 2px solid rgba(0, 0, 0, .08);
+      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+    }
+
+    .scoreLeft {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .scoreDot {
+      width: 14px;
+      height: 14px;
+      border-radius: 5px;
+      box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .85), 0 2px 8px rgba(0, 0, 0, .10);
+      flex: 0 0 auto;
+    }
+
+    .scoreName {
+      font-weight: 950;
+      font-size: clamp(13px, 1.3vw, 15px);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .scoreBadges {
+      font-size: clamp(14px, 1.6vw, 16px);
+      letter-spacing: 1px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 62%;
+      text-align: right;
+    }
+
+    /* winner highlight: dynamic glow via CSS vars set in JS */
+    .scoreRow.isWinner {
+      border-color: var(--winBorder, rgba(20, 80, 200, .35));
+      box-shadow:
+        0 0 0 3px var(--winGlow, rgba(20, 80, 200, .18)),
+        0 0 26px var(--winGlowSoft, rgba(20, 80, 200, .12)),
+        0 18px 45px rgba(0, 0, 0, .10);
+      transform: translateY(-1px);
     }
 
     footer {
@@ -700,6 +777,10 @@
     @media (max-width: 520px) {
       .wrap {
         grid-template-rows: minmax(240px, 52vh) minmax(0, 1fr);
+      }
+
+      .scoreBadges {
+        max-width: 56%;
       }
     }
   </style>
@@ -786,6 +867,18 @@
     </div>
   </div>
 
+  <!-- NEW: Win overlay -->
+  <div class="winOverlay" id="winOverlay" aria-hidden="true">
+    <div class="winCard">
+      <h3 id="winTitle">Congratulations!</h3>
+      <p id="winSubtitle">You won the Biodiversity Battle!</p>
+
+      <div class="scoreTable" id="scoreTable"></div>
+
+      <button class="success" id="btnPlayAgain">Play Again!</button>
+    </div>
+  </div>
+
   <div class="modalBackdrop" id="modalBackdrop" role="dialog" aria-modal="true"
     aria-hidden="true">
     <div class="modal">
@@ -812,8 +905,6 @@
   </div>
 
   <script>
-    // === Local, hand-drawn style SVG icons (no external dependencies) ===
-
     // ✅ SFX (expects /sfx/*.mp3 in your project)
     const sfxDice = new Audio("sfx/dice-roll.mp3");
     sfxDice.preload = "auto";
@@ -828,14 +919,14 @@
     sfxFail.preload = "auto";
 
     const CATEGORY = {
-      // NEW: Start tile palette (pure white)
+      // Start tile palette (pure white)
       start: {
-        border: "rgba(0,0,0,.09)",   // sem borda cinza
-        stripe: "rgba(0,0,0,.09)",   // sem faixa cinza
+        border: "rgba(0,0,0,.09)",
+        stripe: "rgba(0,0,0,.09)",
         a: "#2d2d2d",
         b: "#6b6b6b",
-        bg1: "rgba(255,255,255,1)",  // branco puro
-        bg2: "rgba(255,255,255,1)"   // branco puro (sem gradiente cinza)
+        bg1: "rgba(255,255,255,1)",
+        bg2: "rgba(255,255,255,1)"
       },
 
       ecosystems: { border: "#0b84a5", stripe: "#34a853", a: "#0b84a5", b: "#2ecc71", bg1: "rgba(11,132,165,.13)", bg2: "rgba(46,204,113,.10)" },
@@ -857,7 +948,6 @@
     };
 
     const SVG = {
-      // NEW: Start/finish flag icon
       startflag: (p) => `
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
           <path d="M18 10v44" fill="none" stroke="rgba(14,26,43,.86)" stroke-width="3" stroke-linecap="round"/>
@@ -1358,10 +1448,28 @@
 
     let pendingMove = null; // { playerIndex, from, to }
 
+    // NEW: game over guard
+    let gameOver = false;
+
     const boardWords = Array.from({ length: BOARD_TILES }, (_, i) => VOCAB[i % VOCAB.length]);
 
     const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
     const randInt = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
+
+    // NEW: convert hex (#RGB / #RRGGBB) to rgba()
+    function hexToRgba(hex, alpha = 1) {
+      const h = String(hex || "").trim();
+      if (h.startsWith("rgba(") || h.startsWith("rgb(")) return h;
+
+      let s = h.replace("#", "");
+      if (s.length === 3) s = s.split("").map(ch => ch + ch).join("");
+      if (s.length !== 6) return `rgba(20,80,200,${alpha})`;
+
+      const r = parseInt(s.slice(0, 2), 16);
+      const g = parseInt(s.slice(2, 4), 16);
+      const b = parseInt(s.slice(4, 6), 16);
+      return `rgba(${r},${g},${b},${alpha})`;
+    }
 
     const CHALLENGES = [
       (word) => ({ title: "Define it", text: `In 1–2 sentences, define <b>${word}</b> in your own words.`, ext: "Give a real-life example." }),
@@ -1402,6 +1510,13 @@
     const turnMsg = document.getElementById("turnMsg");
     const btnPlay = document.getElementById("btnPlay");
 
+    // NEW: win overlay elements
+    const winOverlay = document.getElementById("winOverlay");
+    const winTitle = document.getElementById("winTitle");
+    const winSubtitle = document.getElementById("winSubtitle");
+    const scoreTable = document.getElementById("scoreTable");
+    const btnPlayAgain = document.getElementById("btnPlayAgain");
+
     const btnRoll = document.getElementById("btnRoll");
     const btnEndTurn = document.getElementById("btnEndTurn");
     const btnReset = document.getElementById("btnReset");
@@ -1413,17 +1528,28 @@
     function updateHeader() {
       currentEl.textContent = PLAYERS[current].id;
 
-      if (!turnActive) {
-        turnHintEl.textContent = "Press “Play!” to start the turn.";
+      // If game over, lock controls
+      if (gameOver) {
+        turnHintEl.textContent = "Game over. Press “Play Again!”";
         btnRoll.disabled = true;
+        btnEndTurn.disabled = true;
+        btnReset.disabled = false;
       } else {
-        btnRoll.disabled = false;
-        turnHintEl.textContent = "Roll the dice.";
+        btnEndTurn.disabled = false;
+        btnReset.disabled = false;
+
+        if (!turnActive) {
+          turnHintEl.textContent = "Press “Play!” to start the turn.";
+          btnRoll.disabled = true;
+        } else {
+          btnRoll.disabled = false;
+          turnHintEl.textContent = "Roll the dice.";
+        }
       }
 
       diceValEl.textContent = (lastRoll === null) ? "—" : String(lastRoll);
 
-      btnBadge.disabled = badgeAwardedThisTurn;
+      btnBadge.disabled = badgeAwardedThisTurn || gameOver;
       btnBadge.textContent = badgeAwardedThisTurn
         ? "✅ Badge already awarded this turn"
         : "✅ Give current player a badge";
@@ -1443,7 +1569,7 @@
         token.style.background = p.color;
 
         const text = document.createElement("div");
-        const star = (idx === current) ? " ⭐" : "";
+        const star = (idx === current && !gameOver) ? " ⭐" : "";
         text.innerHTML = `
           <div class="playerName" style="color:${p.color}">${p.name}${star}</div>
           <div class="playerMeta">Position: ${p.pos + 1}/${BOARD_TILES}</div>
@@ -1532,6 +1658,8 @@
     }
 
     function openTile(i) {
+      if (gameOver) return;
+
       selectedTileIndex = i;
       const word = boardWords[i];
       const challenge = pickChallenge(word);
@@ -1566,6 +1694,7 @@
     }
 
     function showTurnOverlay() {
+      if (gameOver) return;
       const p = PLAYERS[current];
       turnMsg.textContent = `Player ${p.id} it’s your turn!`;
       turnMsg.style.color = p.color;
@@ -1578,7 +1707,83 @@
       turnOverlay.setAttribute("aria-hidden", "true");
     }
 
+    // NEW: win overlay helpers
+    function showWinOverlay(winnerIndex) {
+      const w = PLAYERS[winnerIndex];
+      gameOver = true;
+
+      // play success sound when win box appears
+      try {
+        sfxSuccess.currentTime = 0;
+        sfxSuccess.play();
+      } catch (err) { }
+
+      // text styled to winner
+      winTitle.textContent = `${w.name} wins! 🎉`;
+      winTitle.style.color = w.color;
+
+      winSubtitle.textContent = "Congratulations! You won the Biodiversity Battle!";
+      winSubtitle.style.color = "rgba(14,26,43,.70)";
+
+      // build scoreboard (badges as repeated emojis)
+      scoreTable.innerHTML = "";
+      PLAYERS.forEach((p) => {
+        const row = document.createElement("div");
+        row.className = "scoreRow";
+
+        const left = document.createElement("div");
+        left.className = "scoreLeft";
+
+        const dot = document.createElement("div");
+        dot.className = "scoreDot";
+        dot.style.background = p.color;
+
+        const name = document.createElement("div");
+        name.className = "scoreName";
+        name.textContent = `Player ${p.id}`;
+
+        left.appendChild(dot);
+        left.appendChild(name);
+
+        const badges = document.createElement("div");
+        badges.className = "scoreBadges";
+        badges.textContent = (p.badges > 0) ? "🏅".repeat(p.badges) : "—";
+
+        row.appendChild(left);
+        row.appendChild(badges);
+
+        // highlight winner row + dynamic glow using winner color
+        if (p.id === w.id) {
+          row.classList.add("isWinner");
+          const c = w.color || p.color || "#1450c8";
+          row.style.setProperty("--winBorder", hexToRgba(c, 0.40));
+          row.style.setProperty("--winGlow", hexToRgba(c, 0.22));
+          row.style.setProperty("--winGlowSoft", hexToRgba(c, 0.14));
+        }
+
+        scoreTable.appendChild(row);
+      });
+
+      // lock turn overlay if visible
+      hideTurnOverlay();
+      closeModal();
+
+      updateHeader();
+      renderPlayers();
+      renderBoard();
+
+      winOverlay.style.display = "flex";
+      winOverlay.setAttribute("aria-hidden", "false");
+    }
+
+    function hideWinOverlay() {
+      winOverlay.style.display = "none";
+      winOverlay.setAttribute("aria-hidden", "true");
+    }
+
     function startTurn() {
+      if (gameOver) return;
+
       badgeAwardedThisTurn = false;
       turnActive = true;
       lastRoll = null;
@@ -1592,15 +1797,13 @@
     }
 
     function rollDice() {
-      if (!turnActive) return;
+      if (!turnActive || gameOver) return;
 
-      // ✅ play dice roll sound every time Roll Dice is clicked
+      // play dice roll sound every time Roll Dice is clicked
       try {
-        sfxDice.currentTime = 0; // restart if already playing
+        sfxDice.currentTime = 0;
         sfxDice.play();
-      } catch (err) {
-        // ignore autoplay/security errors
-      }
+      } catch (err) { }
 
       lastRoll = randInt(1, 6);
       const p = PLAYERS[current];
@@ -1618,6 +1821,8 @@
     }
 
     function nextPlayer() {
+      if (gameOver) return;
+
       current = (current + 1) % PLAYERS.length;
       turnActive = false;
       lastRoll = null;
@@ -1632,13 +1837,16 @@
     }
 
     function closeAndAdvanceNoBadge() {
+      if (gameOver) return;
       pendingMove = null;
       closeModal();
       nextPlayer();
     }
 
     function resetGame() {
+      hideWinOverlay();
       closeModal();
+
       PLAYERS.forEach(p => { p.pos = 0; p.badges = 0; });
       current = 0;
       lastRoll = null;
@@ -1646,6 +1854,7 @@
       turnActive = false;
       badgeAwardedThisTurn = false;
       pendingMove = null;
+      gameOver = false;
 
       updateHeader();
       renderPlayers();
@@ -1654,15 +1863,13 @@
     }
 
     function awardBadgeAndAdvance() {
-      if (badgeAwardedThisTurn) return;
+      if (badgeAwardedThisTurn || gameOver) return;
 
-      // ✅ play win sound ONLY when badge button is clicked
+      // play win sound ONLY when badge button is clicked
       try {
         sfxWin.currentTime = 0;
         sfxWin.play();
-      } catch (err) {
-        // ignore autoplay/security errors
-      }
+      } catch (err) { }
 
       const p = PLAYERS[current];
 
@@ -1674,23 +1881,14 @@
       p.badges = clamp(p.badges + 1, 0, 99);
       badgeAwardedThisTurn = true;
 
-    if (p.badges >= 5) {
-      closeModal();
-      renderPlayers();
-      renderBoard();
-
-      // ✅ Play success sound then show alert
-      try {
-        sfxSuccess.currentTime = 0;
-        sfxSuccess.play();
-      } catch (err) {
-        // ignore autoplay/security errors
+      // WIN CONDITION -> show win overlay (instead of alert + reset)
+      if (p.badges >= 5) {
+        closeModal();
+        renderPlayers();
+        renderBoard();
+        showWinOverlay(current);
+        return;
       }
-
-      alert(`${p.name} wins! 🎉\n\nCongratulations! You won the Biodiversity Battle!`);
-      resetGame();
-      return;
-    }
 
       renderPlayers();
       renderBoard();
@@ -1700,7 +1898,7 @@
     }
 
     function newChallenge() {
-      if (selectedTileIndex === null) return;
+      if (selectedTileIndex === null || gameOver) return;
       const word = boardWords[selectedTileIndex];
       const challenge = pickChallenge(word);
       challengeBox.innerHTML = `<b>${challenge.title}</b><div>${challenge.text}</div>`;
@@ -1712,8 +1910,9 @@
     btnEndTurn.addEventListener("click", nextPlayer);
     btnReset.addEventListener("click", resetGame);
 
-    // ✅ fail sound ONLY on Try Again button click
+    // fail sound ONLY on Try Again button click
     btnTryAgain.addEventListener("click", () => {
+      if (gameOver) return;
       try {
         sfxFail.currentTime = 0;
         sfxFail.play();
@@ -1724,13 +1923,20 @@
     btnBadge.addEventListener("click", awardBadgeAndAdvance);
     btnNewChallenge.addEventListener("click", newChallenge);
 
+    // Play Again button
+    btnPlayAgain.addEventListener("click", resetGame);
+
     // Note: backdrop click and Escape close WITHOUT fail sound (by design)
     modalBackdrop.addEventListener("click", (e) => {
+      if (gameOver) return;
       if (e.target === modalBackdrop) closeAndAdvanceNoBadge();
     });
 
     window.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") closeAndAdvanceNoBadge();
+      if (e.key === "Escape") {
+        if (gameOver) return;
+        closeAndAdvanceNoBadge();
+      }
     });
 
     updateHeader();
