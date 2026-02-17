@@ -1,4 +1,9 @@
-<img src="https://raw.githubusercontent.com/cometsinthesky/biodiversity-battle-game/main/images/biodiversity-battle-og-image.png" alt="Biodiversity Battle OG Image" width="300" height="300" align="center" />
+<p align="center">
+  <img src="https://raw.githubusercontent.com/cometsinthesky/biodiversity-battle-game/main/images/biodiversity-battle-og-image.png"
+       alt="Biodiversity Battle OG Image"
+       width="300"
+       height="300" />
+</p>
 
 ## Biodiversity Battle Online Board Game 🕹️🧬🔬🦠🧫🌱 
 
