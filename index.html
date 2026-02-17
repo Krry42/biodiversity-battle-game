@@ -818,6 +818,9 @@
     const sfxDice = new Audio("sfx/dice-roll.mp3");
     sfxDice.preload = "auto";
 
+    const sfxSuccess = new Audio("sfx/success.mp3");
+    sfxSuccess.preload = "auto";
+
     const sfxWin = new Audio("sfx/win.mp3");
     sfxWin.preload = "auto";
 
@@ -1671,14 +1674,23 @@
       p.badges = clamp(p.badges + 1, 0, 99);
       badgeAwardedThisTurn = true;
 
-      if (p.badges >= 5) {
-        closeModal();
-        renderPlayers();
-        renderBoard();
-        alert(`${p.name} wins! 🎉\n\nClassroom rule: 5 badges = victory.`);
-        resetGame();
-        return;
+    if (p.badges >= 5) {
+      closeModal();
+      renderPlayers();
+      renderBoard();
+
+      // ✅ Play success sound then show alert
+      try {
+        sfxSuccess.currentTime = 0;
+        sfxSuccess.play();
+      } catch (err) {
+        // ignore autoplay/security errors
       }
+
+      alert(`${p.name} wins! 🎉\n\nCongratulations! You won the Biodiversity Battle!`);
+      resetGame();
+      return;
+    }
 
       renderPlayers();
       renderBoard();
