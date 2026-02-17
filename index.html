@@ -12,20 +12,26 @@
   <meta name="robots" content="index,follow" />
   <link rel="canonical"
     href="https://cometsinthesky.github.io/biodiversity-battle-game/" />
-  
+
   <!-- Social Preview, Open Graph para Facebook, LinkedIn, etc. -->
   <meta property="og:title" content="Biodiversity Battle Online Board Game" />
-  <meta property="og:description" content="Free online board game for Science lessons about biodiversity, ecosystems, and biology." />
+  <meta property="og:description"
+    content="Free online board game for Science lessons about biodiversity, ecosystems, and biology." />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://cometsinthesky.github.io/biodiversity-battle-game/" />
-  <meta property="og:image" content="https://cometsinthesky.github.io/biodiversity-battle-game/images/biodiversity-battle-og-image.jpg" />
+  <meta property="og:url"
+    content="https://cometsinthesky.github.io/biodiversity-battle-game/" />
+  <meta property="og:image"
+    content="https://cometsinthesky.github.io/biodiversity-battle-game/images/biodiversity-battle-og-image.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
 
   <!-- ADD FAVICON -->
-  <link rel="apple-touch-icon" sizes="180x180" href="./image-icons/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="./image-icons/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="./image-icons/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180"
+    href="./image-icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32"
+    href="./image-icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16"
+    href="./image-icons/favicon-16x16.png">
   <link rel="manifest" href="./image-icons/site.webmanifest">
 
   <style>
@@ -736,7 +742,8 @@
           <div class="stat">
             <h2>Win condition</h2>
             <div class="muted">First player to earn <b>5 badges</b> wins. (Max:
-              <b>1 badge per turn</b>.)</div>
+              <b>1 badge per turn</b>.)
+            </div>
           </div>
 
           <div class="players" id="players"></div>
@@ -807,10 +814,15 @@
   <script>
     // === Local, hand-drawn style SVG icons (no external dependencies) ===
 
-    // ✅ NEW: Dice roll SFX (expects /sfx/dice-roll.mp3 in your project)
+    // ✅ SFX (expects /sfx/*.mp3 in your project)
     const sfxDice = new Audio("sfx/dice-roll.mp3");
     sfxDice.preload = "auto";
-    // sfxDice.volume = 0.9; // optional
+
+    const sfxWin = new Audio("sfx/win.mp3");
+    sfxWin.preload = "auto";
+
+    const sfxFail = new Audio("sfx/fail.mp3");
+    sfxFail.preload = "auto";
 
     const CATEGORY = {
       // NEW: Start tile palette (pure white)
@@ -1579,7 +1591,7 @@
     function rollDice() {
       if (!turnActive) return;
 
-      // ✅ NEW: play dice roll sound every time Roll Dice is clicked
+      // ✅ play dice roll sound every time Roll Dice is clicked
       try {
         sfxDice.currentTime = 0; // restart if already playing
         sfxDice.play();
@@ -1641,6 +1653,14 @@
     function awardBadgeAndAdvance() {
       if (badgeAwardedThisTurn) return;
 
+      // ✅ play win sound ONLY when badge button is clicked
+      try {
+        sfxWin.currentTime = 0;
+        sfxWin.play();
+      } catch (err) {
+        // ignore autoplay/security errors
+      }
+
       const p = PLAYERS[current];
 
       if (pendingMove && pendingMove.playerIndex === current) {
@@ -1680,11 +1700,19 @@
     btnEndTurn.addEventListener("click", nextPlayer);
     btnReset.addEventListener("click", resetGame);
 
-    btnTryAgain.addEventListener("click", closeAndAdvanceNoBadge);
+    // ✅ fail sound ONLY on Try Again button click
+    btnTryAgain.addEventListener("click", () => {
+      try {
+        sfxFail.currentTime = 0;
+        sfxFail.play();
+      } catch (err) { }
+      closeAndAdvanceNoBadge();
+    });
 
     btnBadge.addEventListener("click", awardBadgeAndAdvance);
     btnNewChallenge.addEventListener("click", newChallenge);
 
+    // Note: backdrop click and Escape close WITHOUT fail sound (by design)
     modalBackdrop.addEventListener("click", (e) => {
       if (e.target === modalBackdrop) closeAndAdvanceNoBadge();
     });
