@@ -1,17 +1,33 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1,viewport-fit=cover" />
+
   <title>Biodiversity Battle Online Board Game</title>
+  <meta name="description"
+    content="Biodiversity Battle is a free online board game for Science classes. Play, learn key biology terms, and earn badges. Created by Lucas Ferreira." />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical"
+    href="https://cometsinthesky.github.io/biodiversity-battle-game/" />
+  <meta property="og:title" content="Biodiversity Battle Online Board Game" />
+  <meta property="og:description"
+    content="Free online board game for Science lessons about biodiversity, ecosystems, and biology." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url"
+    content="https://cometsinthesky.github.io/biodiversity-battle-game/" />
+  <meta property="og:image"
+    content="https://cometsinthesky.github.io/biodiversity-battle-game/images/biodiversity-battle-og-image.png" />
 
   <style>
-    :root{
-      --card: rgba(255,255,255,.88);
-      --card-strong: rgba(255,255,255,.95);
+    :root {
+      --card: rgba(255, 255, 255, .88);
+      --card-strong: rgba(255, 255, 255, .95);
       --ink: #0e1a2b;
-      --muted: rgba(14,26,43,.65);
-      --shadow: 0 10px 30px rgba(0,0,0,.18);
+      --muted: rgba(14, 26, 43, .65);
+      --shadow: 0 10px 30px rgba(0, 0, 0, .18);
       --radius: 18px;
 
       --page-pad: clamp(12px, 2.2vw, 26px);
@@ -31,10 +47,16 @@
       --grid-gap: clamp(8px, 1vw, 12px);
     }
 
-    *{ box-sizing: border-box; }
-    html, body{ height: 100%; }
+    * {
+      box-sizing: border-box;
+    }
 
-    body{
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
       margin: 0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       color: var(--ink);
@@ -44,8 +66,8 @@
       touch-action: manipulation;
     }
 
-    body::before{
-      content:"";
+    body::before {
+      content: "";
       position: fixed;
       inset: 0;
       background-image: url("https://commons.wikimedia.org/wiki/Special:FilePath/The_Science_Laboratory.jpg");
@@ -56,27 +78,25 @@
       filter: saturate(1.05) contrast(1.05);
       z-index: -2;
     }
-    body::after{
-      content:"";
+
+    body::after {
+      content: "";
       position: fixed;
       inset: 0;
-      background: radial-gradient(circle at 20% 10%, rgba(255,255,255,.60), rgba(255,255,255,.10) 55%, rgba(255,255,255,.35));
+      background: radial-gradient(circle at 20% 10%, rgba(255, 255, 255, .60), rgba(255, 255, 255, .10) 55%, rgba(255, 255, 255, .35));
       z-index: -1;
     }
 
-    .page{
+    .page {
       height: 100vh;
-      padding: max(var(--page-pad), env(safe-area-inset-top))
-               max(var(--page-pad), env(safe-area-inset-right))
-               max(var(--page-pad), env(safe-area-inset-bottom))
-               max(var(--page-pad), env(safe-area-inset-left));
+      padding: max(var(--page-pad), env(safe-area-inset-top)) max(var(--page-pad), env(safe-area-inset-right)) max(var(--page-pad), env(safe-area-inset-bottom)) max(var(--page-pad), env(safe-area-inset-left));
       display: flex;
       flex-direction: column;
       gap: var(--gap);
       min-height: 0;
     }
 
-    .wrap{
+    .wrap {
       flex: 1 1 auto;
       min-height: 0;
       display: grid;
@@ -84,20 +104,23 @@
       grid-template-columns: minmax(300px, 420px) 1fr;
     }
 
-    @media (max-width: 980px){
-      .wrap{ grid-template-columns: 1fr; }
+    @media (max-width: 980px) {
+      .wrap {
+        grid-template-columns: 1fr;
+      }
     }
 
-    .panel, .boardShell{
+    .panel,
+    .boardShell {
       background: var(--card);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      border: 1px solid rgba(255,255,255,.45);
+      border: 1px solid rgba(255, 255, 255, .45);
       backdrop-filter: blur(6px);
       min-height: 0;
     }
 
-    .panel{
+    .panel {
       padding: clamp(10px, 1.2vw, 14px);
       display: flex;
       flex-direction: column;
@@ -106,52 +129,58 @@
       overflow: hidden;
     }
 
-    .brand{
-      display:flex; align-items:center; justify-content:space-between; gap: 10px;
+    .brand {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
       padding: 10px 10px;
       border-radius: 14px;
       background: var(--card-strong);
-      border: 1px solid rgba(0,0,0,.06);
+      border: 1px solid rgba(0, 0, 0, .06);
     }
-    .brand h1{
+
+    .brand h1 {
       margin: 0;
       font-size: var(--title-font);
       line-height: 1.2;
       letter-spacing: .2px;
     }
-    .brand p{
+
+    .brand p {
       margin: 4px 0 0;
       color: var(--muted);
       font-size: var(--small-font);
     }
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       padding: 7px 9px;
       border-radius: 999px;
-      background: rgba(14,26,43,.08);
+      background: rgba(14, 26, 43, .08);
       font-size: var(--small-font);
-      color: rgba(14,26,43,.85);
+      color: rgba(14, 26, 43, .85);
       white-space: nowrap;
     }
 
-    .controls{
-      display:grid;
+    .controls {
+      display: grid;
       gap: var(--gap);
       min-height: 0;
       overflow: hidden;
     }
 
-    .row{
-      display:flex;
+    .row {
+      display: flex;
       gap: 10px;
       flex-wrap: wrap;
-      align-items:center;
+      align-items: center;
     }
 
-    button{
-      appearance:none;
+    button {
+      appearance: none;
       border: 0;
       border-radius: 14px;
       padding: var(--btn-pad-y) var(--btn-pad-x);
@@ -159,64 +188,80 @@
       font-weight: 900;
       font-size: var(--btn-font);
       color: white;
-      background: rgba(20,80,200,.92);
-      box-shadow: 0 8px 18px rgba(20,80,200,.22);
+      background: rgba(20, 80, 200, .92);
+      box-shadow: 0 8px 18px rgba(20, 80, 200, .22);
       transition: transform .06s ease, filter .15s ease;
       min-height: 44px;
       min-width: 44px;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
     }
-    button:hover{ filter: brightness(1.03); }
-    button:active{ transform: translateY(1px); }
-    button:disabled{
+
+    button:hover {
+      filter: brightness(1.03);
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    button:disabled {
       opacity: .55;
       cursor: not-allowed;
       box-shadow: none;
       filter: grayscale(.15);
     }
-    button.secondary{
-      background: rgba(14,26,43,.86);
-      box-shadow: 0 8px 18px rgba(14,26,43,.20);
+
+    button.secondary {
+      background: rgba(14, 26, 43, .86);
+      box-shadow: 0 8px 18px rgba(14, 26, 43, .20);
     }
-    button.ghost{
-      background: rgba(255,255,255,.80);
-      color: rgba(14,26,43,.92);
-      border: 3px solid var(--cat-border, rgba(0,0,0,.10));
+
+    button.ghost {
+      background: rgba(255, 255, 255, .80);
+      color: rgba(14, 26, 43, .92);
+      border: 3px solid var(--cat-border, rgba(0, 0, 0, .10));
       box-shadow: none;
     }
-    button.danger{
-      background: rgba(231,76,60,.95);
-      box-shadow: 0 8px 18px rgba(231,76,60,.22);
-    }
-    button.danger:hover{ filter: brightness(1.03); }
 
-    .stat{
-      background: rgba(255,255,255,.88);
-      border: 1px solid rgba(0,0,0,.08);
+    button.danger {
+      background: rgba(231, 76, 60, .95);
+      box-shadow: 0 8px 18px rgba(231, 76, 60, .22);
+    }
+
+    button.danger:hover {
+      filter: brightness(1.03);
+    }
+
+    .stat {
+      background: rgba(255, 255, 255, .88);
+      border: 1px solid rgba(0, 0, 0, .08);
       border-radius: 14px;
       padding: 10px;
       flex: 1 1 180px;
       min-width: 160px;
     }
-    .stat h2{
-      margin:0 0 6px;
+
+    .stat h2 {
+      margin: 0 0 6px;
       font-size: clamp(12px, 1.2vw, 14px);
-      color: rgba(14,26,43,.85);
+      color: rgba(14, 26, 43, .85);
     }
-    .big{
+
+    .big {
       font-size: clamp(24px, 3.2vw, 34px);
       font-weight: 1000;
       letter-spacing: .5px;
       line-height: 1;
     }
-    .muted{
+
+    .muted {
       color: var(--muted);
       font-size: var(--small-font);
     }
 
-    .players{
-      display:grid;
+    .players {
+      display: grid;
       gap: 10px;
       overflow: auto;
       -webkit-overflow-scrolling: touch;
@@ -224,27 +269,34 @@
       min-height: 0;
       flex: 1 1 auto;
     }
-    .playerCard{
-      background: rgba(255,255,255,.88);
-      border: 1px solid rgba(0,0,0,.08);
+
+    .playerCard {
+      background: rgba(255, 255, 255, .88);
+      border: 1px solid rgba(0, 0, 0, .08);
       border-radius: 14px;
       padding: 10px 12px;
-      display:flex;
+      display: flex;
       gap: 10px;
       align-items: center;
       justify-content: space-between;
     }
-    .playerLeft{
-      display:flex; gap: 10px; align-items:center;
+
+    .playerLeft {
+      display: flex;
+      gap: 10px;
+      align-items: center;
       min-width: 0;
     }
-    .token{
-      width: 18px; height: 18px;
+
+    .token {
+      width: 18px;
+      height: 18px;
       border-radius: 6px;
-      box-shadow: inset 0 0 0 2px rgba(255,255,255,.8);
+      box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .8);
       flex: 0 0 auto;
     }
-    .playerName{
+
+    .playerName {
       font-weight: 1000;
       font-size: clamp(12px, 1.2vw, 14px);
       line-height: 1.2;
@@ -252,60 +304,72 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .playerMeta{
+
+    .playerMeta {
       font-size: clamp(11px, 1.1vw, 12px);
       color: var(--muted);
     }
 
-    .badges{
-      display:flex; gap: 6px; flex-wrap: wrap;
-      justify-content:flex-end;
-      align-items:center;
+    .badges {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      align-items: center;
       max-width: 160px;
     }
-    .badge{
+
+    .badge {
       font-size: 12px;
       padding: 5px 8px;
       border-radius: 999px;
-      background: rgba(14,26,43,.08);
-      color: rgba(14,26,43,.85);
-      border: 1px solid rgba(0,0,0,.06);
+      background: rgba(14, 26, 43, .08);
+      color: rgba(14, 26, 43, .85);
+      border: 1px solid rgba(0, 0, 0, .06);
     }
 
-    .boardShell{
+    .boardShell {
       padding: 12px;
-      display:flex;
+      display: flex;
       flex-direction: column;
       min-height: 0;
       overflow: hidden;
     }
-    .boardHeader{
-      display:flex;
+
+    .boardHeader {
+      display: flex;
       justify-content: space-between;
       align-items: flex-end;
       gap: 12px;
       padding: 8px 10px 10px;
       flex: 0 0 auto;
     }
-    .boardHeader h2{ margin:0; font-size: clamp(13px, 1.3vw, 16px); }
-    .boardHeader .muted{ margin:0; }
 
-    .board{
+    .boardHeader h2 {
+      margin: 0;
+      font-size: clamp(13px, 1.3vw, 16px);
+    }
+
+    .boardHeader .muted {
+      margin: 0;
+    }
+
+    .board {
       flex: 1 1 auto;
       min-height: 0;
 
       background-image:
-        linear-gradient(rgba(255,255,255,.80), rgba(255,255,255,.80)),
+        linear-gradient(rgba(255, 255, 255, .80), rgba(255, 255, 255, .80)),
         url("images/board-bg.png");
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
       background-blend-mode: normal;
 
-      border: 3px solid var(--cat-border, rgba(0,0,0,.10));
+      border: 3px solid var(--cat-border, rgba(0, 0, 0, .10));
       border-radius: 16px;
       padding: 12px;
-      display:grid;
+      display: grid;
       gap: var(--grid-gap);
 
       overflow: auto;
@@ -313,43 +377,73 @@
       overscroll-behavior: contain;
     }
 
-    @media (min-width: 1200px){ .board{ grid-template-columns: repeat(8, 1fr); } }
-    @media (min-width: 900px) and (max-width: 1199px){ .board{ grid-template-columns: repeat(7, 1fr); } }
-    @media (min-width: 650px) and (max-width: 899px){ .board{ grid-template-columns: repeat(6, 1fr); } }
-    @media (max-width: 649px){ .board{ grid-template-columns: repeat(4, 1fr); } }
+    @media (min-width: 1200px) {
+      .board {
+        grid-template-columns: repeat(8, 1fr);
+      }
+    }
 
-    .tile{
+    @media (min-width: 900px) and (max-width: 1199px) {
+      .board {
+        grid-template-columns: repeat(7, 1fr);
+      }
+    }
+
+    @media (min-width: 650px) and (max-width: 899px) {
+      .board {
+        grid-template-columns: repeat(6, 1fr);
+      }
+    }
+
+    @media (max-width: 649px) {
+      .board {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .tile {
       position: relative;
       border-radius: 14px;
       padding: 10px 10px 8px;
-      background: var(--cat-bg, rgba(255,255,255,.90));
-      border: 3px solid var(--cat-border, rgba(0,0,0,.10));
-      cursor:pointer;
+      background: var(--cat-bg, rgba(255, 255, 255, .90));
+      border: 3px solid var(--cat-border, rgba(0, 0, 0, .10));
+      cursor: pointer;
       min-height: var(--tile-min-h);
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       transition: transform .06s ease, filter .15s ease;
-      user-select:none;
+      user-select: none;
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
       overflow: hidden;
     }
-    .tile:hover{ filter: brightness(1.02); transform: translateY(-1px); }
-    .tile:active{ transform: translateY(0px); }
 
-    .tileTop{
-      display:flex; align-items:flex-start; gap: 8px;
+    .tile:hover {
+      filter: brightness(1.02);
+      transform: translateY(-1px);
+    }
+
+    .tile:active {
+      transform: translateY(0px);
+    }
+
+    .tileTop {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
       min-width: 0;
     }
-    .icon{
+
+    .icon {
       width: var(--icon-size);
       height: var(--icon-size);
       flex: 0 0 auto;
       object-fit: contain;
-      filter: drop-shadow(0 2px 6px rgba(0,0,0,.12));
+      filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .12));
     }
-    .tileTitle{
+
+    .tileTitle {
       font-weight: 950;
       font-size: var(--tile-title);
       line-height: 1.15;
@@ -358,21 +452,26 @@
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
     }
-    .tileMeta{
-      display:flex; justify-content:space-between; align-items:center;
+
+    .tileMeta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       font-size: clamp(10px, 1.0vw, 11px);
       color: var(--muted);
     }
-    .tileIndex{
+
+    .tileIndex {
       font-weight: 900;
-      color: rgba(14,26,43,.55);
+      color: rgba(14, 26, 43, .55);
     }
-    .occupants{
-      position:absolute;
+
+    .occupants {
+      position: absolute;
       left: 50%;
       top: 58%;
       transform: translate(-50%, -50%);
-      display:flex;
+      display: flex;
       gap: 6px;
       flex-wrap: wrap;
       justify-content: center;
@@ -381,146 +480,178 @@
       pointer-events: none;
       z-index: 3;
     }
-    .dot{
-      width: 12px; height: 12px;
+
+    .dot {
+      width: 12px;
+      height: 12px;
       border-radius: 6px;
-      box-shadow: inset 0 0 0 2px rgba(255,255,255,.85), 0 2px 8px rgba(0,0,0,.12);
+      box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .85), 0 2px 8px rgba(0, 0, 0, .12);
     }
 
-    .tile::before{
-      content:"";
-      position:absolute;
+    .tile::before {
+      content: "";
+      position: absolute;
       inset: 0 0 auto 0;
       height: 8px;
-      background: var(--cat-stripe, rgba(14,26,43,.10));
+      background: var(--cat-stripe, rgba(14, 26, 43, .10));
       opacity: .85;
-      pointer-events:none;
+      pointer-events: none;
     }
-    .tileTop{ position: relative; z-index: 1; }
-    .tileMeta{ position: relative; z-index: 1; }
-    .occupants{ z-index: 2; }
 
-    .modalBackdrop{
+    .tileTop {
+      position: relative;
+      z-index: 1;
+    }
+
+    .tileMeta {
+      position: relative;
+      z-index: 1;
+    }
+
+    .occupants {
+      z-index: 2;
+    }
+
+    .modalBackdrop {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,.42);
-      display:none;
-      align-items:center;
-      justify-content:center;
+      background: rgba(0, 0, 0, .42);
+      display: none;
+      align-items: center;
+      justify-content: center;
       padding: 18px;
       z-index: 50;
       touch-action: none;
     }
-    .modal{
+
+    .modal {
       width: min(820px, 100%);
       max-height: min(82vh, 780px);
-      background: rgba(255,255,255,.96);
+      background: rgba(255, 255, 255, .96);
       border-radius: 18px;
-      border: 1px solid rgba(0,0,0,.12);
-      box-shadow: 0 20px 60px rgba(0,0,0,.25);
-      overflow:hidden;
-      display:flex;
+      border: 1px solid rgba(0, 0, 0, .12);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, .25);
+      overflow: hidden;
+      display: flex;
       flex-direction: column;
     }
-    .modalHeader{
+
+    .modalHeader {
       padding: 14px 16px;
-      background: rgba(14,26,43,.06);
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
+      background: rgba(14, 26, 43, .06);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
       gap: 10px;
       flex: 0 0 auto;
     }
-    .modalHeader h3{
-      margin:0;
+
+    .modalHeader h3 {
+      margin: 0;
       font-size: clamp(14px, 1.4vw, 16px);
       line-height: 1.25;
     }
-    .modalBody{
+
+    .modalBody {
       padding: 14px 16px 16px;
-      display:grid;
+      display: grid;
       gap: 10px;
       overflow: auto;
       -webkit-overflow-scrolling: touch;
       flex: 1 1 auto;
     }
-    .challenge{
-      background: rgba(255,255,255,.95);
-      border: 3px solid var(--cat-border, rgba(0,0,0,.10));
+
+    .challenge {
+      background: rgba(255, 255, 255, .95);
+      border: 3px solid var(--cat-border, rgba(0, 0, 0, .10));
       border-radius: 14px;
       padding: 12px;
       font-size: clamp(12px, 1.3vw, 14px);
     }
-    .challenge b{ display:block; margin-bottom: 4px; }
-    .modalFooter{
+
+    .challenge b {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .modalFooter {
       padding: 12px 16px 16px;
-      display:flex;
+      display: flex;
       gap: 10px;
       flex-wrap: wrap;
-      justify-content:flex-end;
+      justify-content: flex-end;
       flex: 0 0 auto;
     }
 
-    .turnOverlay{
+    .turnOverlay {
       position: fixed;
       inset: 0;
-      display:none;
-      align-items:center;
-      justify-content:center;
+      display: none;
+      align-items: center;
+      justify-content: center;
       padding: 18px;
       z-index: 60;
-      background: rgba(0,0,0,.50);
+      background: rgba(0, 0, 0, .50);
     }
-    .turnCard{
+
+    .turnCard {
       width: min(560px, 100%);
-      background: rgba(255,255,255,.96);
+      background: rgba(255, 255, 255, .96);
       border-radius: 18px;
-      border: 1px solid rgba(0,0,0,.12);
-      box-shadow: 0 20px 60px rgba(0,0,0,.28);
+      border: 1px solid rgba(0, 0, 0, .12);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, .28);
       padding: 18px;
-      text-align:center;
+      text-align: center;
     }
-    .turnCard h3{
+
+    .turnCard h3 {
       margin: 0 0 8px;
       font-size: clamp(18px, 2.4vw, 22px);
       line-height: 1.2;
       font-weight: 1000;
     }
-    .turnCard p{
+
+    .turnCard p {
       margin: 0 0 14px;
-      color: rgba(14,26,43,.70);
+      color: rgba(14, 26, 43, .70);
       font-size: var(--small-font);
     }
-    .turnCard .playBtn{
+
+    .turnCard .playBtn {
       width: 100%;
       font-size: clamp(14px, 1.6vw, 16px);
       padding: 14px 16px;
       border-radius: 16px;
     }
 
-    footer{
+    footer {
       flex: 0 0 auto;
-      background: rgba(255,255,255,.70);
-      border: 1px solid rgba(0,0,0,.07);
+      background: rgba(255, 255, 255, .70);
+      border: 1px solid rgba(0, 0, 0, .07);
       border-radius: 12px;
       padding: 6px 10px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.08);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
       backdrop-filter: blur(6px);
       font-size: 9px;
-      color: rgba(14,26,43,.80);
+      color: rgba(14, 26, 43, .80);
       line-height: 1.2;
       display: flex;
       justify-content: center;
       align-items: center;
       text-align: center;
     }
-    footer a{
-      color: rgba(20,80,200,.95);
+
+    footer a {
+      color: rgba(20, 80, 200, .95);
       font-weight: 900;
       text-decoration: none;
     }
-    footer a:hover{ text-decoration: underline; }
-    footer .footerLine{
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    footer .footerLine {
       max-width: 100%;
       white-space: normal;
       overflow: visible;
@@ -528,23 +659,33 @@
       word-break: break-word;
     }
 
-    @media (max-width: 980px){
-      .wrap{
+    @media (max-width: 980px) {
+      .wrap {
         grid-template-columns: 1fr;
         grid-template-rows: minmax(240px, 46vh) minmax(0, 1fr);
       }
-      .panel{
+
+      .panel {
         overflow: auto;
         -webkit-overflow-scrolling: touch;
         overscroll-behavior: contain;
       }
-      .controls{ overflow: visible; }
-      .players{ overflow: visible; }
-      .board{ overflow: auto; }
+
+      .controls {
+        overflow: visible;
+      }
+
+      .players {
+        overflow: visible;
+      }
+
+      .board {
+        overflow: auto;
+      }
     }
 
-    @media (max-width: 520px){
-      .wrap{
+    @media (max-width: 520px) {
+      .wrap {
         grid-template-rows: minmax(240px, 52vh) minmax(0, 1fr);
       }
     }
@@ -574,18 +715,21 @@
             <div class="stat">
               <h2>Dice</h2>
               <div class="big" id="diceVal">—</div>
-              <div class="muted" id="diceHint">Roll 1–6 (movement applies only if badge is awarded)</div>
+              <div class="muted" id="diceHint">Roll 1–6 (movement applies only
+                if badge is awarded)</div>
             </div>
             <div class="stat">
               <h2>Current Player</h2>
               <div class="big" id="currentPlayer">1</div>
-              <div class="muted" id="turnHint">Press “Play!” to start the turn.</div>
+              <div class="muted" id="turnHint">Press “Play!” to start the turn.
+              </div>
             </div>
           </div>
 
           <div class="stat">
             <h2>Win condition</h2>
-            <div class="muted">First player to earn <b>5 badges</b> wins. (Max: <b>1 badge per turn</b>.)</div>
+            <div class="muted">First player to earn <b>5 badges</b> wins. (Max:
+              <b>1 badge per turn</b>.)</div>
           </div>
 
           <div class="players" id="players"></div>
@@ -596,7 +740,8 @@
         <div class="boardHeader">
           <div>
             <h2>Clickable Board</h2>
-            <p class="muted">Scroll inside the board if needed (tablet/phone friendly).</p>
+            <p class="muted">Scroll inside the board if needed (tablet/phone
+              friendly).</p>
           </div>
           <div class="pill">Tap tiles</div>
         </div>
@@ -607,11 +752,14 @@
 
     <footer>
       <div class="footerLine">
-      Created by Lucas Ferreira (MSc. Physics Education, PhD student Science Education (UnB/IF/PPGEduC)
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">CC BY-NC-ND 4.0</a>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="https://github.com/cometsinthesky/biodiversity-living-things-game" target="_blank" rel="noopener noreferrer">GitHub Page</a>
+        Created by Lucas Ferreira (MSc. Physics Education, PhD student Science
+        Education (UnB/IF/PPGEduC)
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/"
+          target="_blank" rel="noopener noreferrer">CC BY-NC-ND 4.0</a>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="https://github.com/cometsinthesky/biodiversity-living-things-game"
+          target="_blank" rel="noopener noreferrer">GitHub Page</a>
       </div>
     </footer>
   </div>
@@ -624,7 +772,8 @@
     </div>
   </div>
 
-  <div class="modalBackdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modalBackdrop" id="modalBackdrop" role="dialog" aria-modal="true"
+    aria-hidden="true">
     <div class="modal">
       <div class="modalHeader">
         <div>
@@ -640,7 +789,8 @@
         </div>
       </div>
       <div class="modalFooter">
-        <button class="danger" id="btnTryAgain">⏳ Try again, wait for next turn</button>
+        <button class="danger" id="btnTryAgain">⏳ Try again, wait for next
+          turn</button>
         <button id="btnBadge">✅ Give current player a badge</button>
         <button class="secondary" id="btnNewChallenge">🔁 New challenge</button>
       </div>
@@ -658,12 +808,12 @@
     const CATEGORY = {
       // NEW: Start tile palette (pure white)
       start: {
-      border: "rgba(0,0,0,.09)",   // sem borda cinza
-      stripe: "rgba(0,0,0,.09)",   // sem faixa cinza
-      a: "#2d2d2d",
-      b: "#6b6b6b",
-      bg1: "rgba(255,255,255,1)",  // branco puro
-      bg2: "rgba(255,255,255,1)"   // branco puro (sem gradiente cinza)
+        border: "rgba(0,0,0,.09)",   // sem borda cinza
+        stripe: "rgba(0,0,0,.09)",   // sem faixa cinza
+        a: "#2d2d2d",
+        b: "#6b6b6b",
+        bg1: "rgba(255,255,255,1)",  // branco puro
+        bg2: "rgba(255,255,255,1)"   // branco puro (sem gradiente cinza)
       },
 
       ecosystems: { border: "#0b84a5", stripe: "#34a853", a: "#0b84a5", b: "#2ecc71", bg1: "rgba(11,132,165,.13)", bg2: "rgba(46,204,113,.10)" },
@@ -676,12 +826,12 @@
       eco_coralreef: { border: "#00e5ff", stripe: "#00b8d4", a: "#00e5ff", b: "#18ffff", bg1: "rgba(0,229,255,.13)", bg2: "rgba(24,255,255,.10)" },
       eco_tundra: { border: "#ff8f00", stripe: "#ef6c00", a: "#ff8f00", b: "#ffcc80", bg1: "rgba(255,143,0,.13)", bg2: "rgba(255,204,128,.10)" },
       eco_urban: { border: "#757575", stripe: "#424242", a: "#757575", b: "#bdbdbd", bg1: "rgba(117,117,117,.13)", bg2: "rgba(189,189,189,.10)" },
-      animals:    { border: "#f39c12", stripe: "#e67e22", a: "#f39c12", b: "#e67e22", bg1: "rgba(243,156,18,.14)", bg2: "rgba(230,126,34,.10)" },
-      micro:      { border: "#8e44ad", stripe: "#9b59b6", a: "#8e44ad", b: "#9b59b6", bg1: "rgba(142,68,173,.14)", bg2: "rgba(155,89,182,.10)" },
-      genetics:   { border: "#16a085", stripe: "#2bbbad", a: "#16a085", b: "#2bbbad", bg1: "rgba(22,160,133,.14)", bg2: "rgba(43,187,173,.10)" },
-      ecology:    { border: "#2ecc71", stripe: "#34a853", a: "#2ecc71", b: "#34a853", bg1: "rgba(46,204,113,.14)", bg2: "rgba(52,168,83,.10)" },
-      evolution:  { border: "#c0392b", stripe: "#e74c3c", a: "#c0392b", b: "#e74c3c", bg1: "rgba(192,57,43,.14)", bg2: "rgba(231,76,60,.10)" },
-      general:    { border: "rgba(14,26,43,.22)", stripe: "rgba(14,26,43,.16)", a: "#1450c8", b: "#0e1a2b", bg1: "rgba(255,255,255,.92)", bg2: "rgba(255,255,255,.88)" }
+      animals: { border: "#f39c12", stripe: "#e67e22", a: "#f39c12", b: "#e67e22", bg1: "rgba(243,156,18,.14)", bg2: "rgba(230,126,34,.10)" },
+      micro: { border: "#8e44ad", stripe: "#9b59b6", a: "#8e44ad", b: "#9b59b6", bg1: "rgba(142,68,173,.14)", bg2: "rgba(155,89,182,.10)" },
+      genetics: { border: "#16a085", stripe: "#2bbbad", a: "#16a085", b: "#2bbbad", bg1: "rgba(22,160,133,.14)", bg2: "rgba(43,187,173,.10)" },
+      ecology: { border: "#2ecc71", stripe: "#34a853", a: "#2ecc71", b: "#34a853", bg1: "rgba(46,204,113,.14)", bg2: "rgba(52,168,83,.10)" },
+      evolution: { border: "#c0392b", stripe: "#e74c3c", a: "#c0392b", b: "#e74c3c", bg1: "rgba(192,57,43,.14)", bg2: "rgba(231,76,60,.10)" },
+      general: { border: "rgba(14,26,43,.22)", stripe: "rgba(14,26,43,.16)", a: "#1450c8", b: "#0e1a2b", bg1: "rgba(255,255,255,.92)", bg2: "rgba(255,255,255,.88)" }
     };
 
     const SVG = {
@@ -1028,61 +1178,61 @@
     };
 
     const ICON_KEY = {
-      "start!":"startflag",
-      "atom":"atom",
-      "dna":"dna",
-      "biodiversity":"globe",
-      "ecosystem":"globe",
-      "abiotic factors":"sunrock",
-      "biotic factors":"pawleaf",
-      "species":"tag",
-      "genetic diversity":"dna",
-      "habitat":"house",
-      "niche":"puzzle",
-      "food web":"network",
-      "energy flow":"arrows",
-      "decomposers":"mushroom",
-      "producers":"plant",
-      "consumers":"mouth",
-      "ecological balance":"scales",
-      "symbiosis":"link",
-      "ecosystems: aquatic":"waves",
-      "ecosystems: forest":"tree",
-      "ecosystems: grassland":"grass",
-      "ecosystems: desert":"cactus",
-      "ecosystems: marine":"waves",
-      "ecosystems: freshwater":"waves",
-      "ecosystems: coral reef":"coral",
-      "ecosystems: tundra":"snow",
-      "ecosystems: urban":"city",
-      "invertebrates":"bug",
-      "vertebrates":"spine",
-      "arthropods":"bug",
-      "mollusks":"shell",
-      "arachnids":"spider",
-      "fish":"fish",
-      "amphibians":"frog",
-      "reptiles":"lizard",
-      "birds":"bird",
-      "mammals":"mammal",
-      "microorganism":"cell",
-      "microscopic life":"cell",
-      "microscopic organisms":"cell",
-      "microscopic ecosystems":"petri",
-      "microscopic observation":"microscope",
-      "adaptation":"chameleon",
-      "behavioral adaptation":"footprint",
-      "physiological adaptation":"thermo",
-      "evolution":"spiral",
-      "natural selection":"target",
-      "camouflage":"chameleon"
+      "start!": "startflag",
+      "atom": "atom",
+      "dna": "dna",
+      "biodiversity": "globe",
+      "ecosystem": "globe",
+      "abiotic factors": "sunrock",
+      "biotic factors": "pawleaf",
+      "species": "tag",
+      "genetic diversity": "dna",
+      "habitat": "house",
+      "niche": "puzzle",
+      "food web": "network",
+      "energy flow": "arrows",
+      "decomposers": "mushroom",
+      "producers": "plant",
+      "consumers": "mouth",
+      "ecological balance": "scales",
+      "symbiosis": "link",
+      "ecosystems: aquatic": "waves",
+      "ecosystems: forest": "tree",
+      "ecosystems: grassland": "grass",
+      "ecosystems: desert": "cactus",
+      "ecosystems: marine": "waves",
+      "ecosystems: freshwater": "waves",
+      "ecosystems: coral reef": "coral",
+      "ecosystems: tundra": "snow",
+      "ecosystems: urban": "city",
+      "invertebrates": "bug",
+      "vertebrates": "spine",
+      "arthropods": "bug",
+      "mollusks": "shell",
+      "arachnids": "spider",
+      "fish": "fish",
+      "amphibians": "frog",
+      "reptiles": "lizard",
+      "birds": "bird",
+      "mammals": "mammal",
+      "microorganism": "cell",
+      "microscopic life": "cell",
+      "microscopic organisms": "cell",
+      "microscopic ecosystems": "petri",
+      "microscopic observation": "microscope",
+      "adaptation": "chameleon",
+      "behavioral adaptation": "footprint",
+      "physiological adaptation": "thermo",
+      "evolution": "spiral",
+      "natural selection": "target",
+      "camouflage": "chameleon"
     };
 
-    function normalizeWord(word){
+    function normalizeWord(word) {
       return String(word || "").trim().toLowerCase();
     }
 
-    function categoryFor(word){
+    function categoryFor(word) {
       const raw = String(word ?? "").trim();
       const lower = raw.toLowerCase();
 
@@ -1105,8 +1255,8 @@
       const w = normalizeWord(word);
 
       const animals = new Set([
-        "invertebrates","vertebrates","arthropods","mollusks","arachnids",
-        "fish","amphibians","reptiles","birds","mammals"
+        "invertebrates", "vertebrates", "arthropods", "mollusks", "arachnids",
+        "fish", "amphibians", "reptiles", "birds", "mammals"
       ]);
       if (animals.has(w)) return "animals";
 
@@ -1115,16 +1265,16 @@
       if (w.includes("evolution") || w.includes("natural selection") || w.includes("camouflage") || w.includes("adaptation")) return "evolution";
 
       const eco = new Set([
-        "biodiversity","ecosystem","abiotic factors","biotic factors","species",
-        "habitat","niche","food web","energy flow","decomposers","producers","consumers",
-        "ecological balance","symbiosis"
+        "biodiversity", "ecosystem", "abiotic factors", "biotic factors", "species",
+        "habitat", "niche", "food web", "energy flow", "decomposers", "producers", "consumers",
+        "ecological balance", "symbiosis"
       ]);
       if (eco.has(w)) return "ecology";
 
       return "general";
     }
 
-    function iconKeyFor(word){
+    function iconKeyFor(word) {
       const w = normalizeWord(word);
       if (ICON_KEY[w]) return ICON_KEY[w];
 
@@ -1143,11 +1293,11 @@
       return "leaf";
     }
 
-    function svgDataUri(svgString){
+    function svgDataUri(svgString) {
       return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svgString.trim());
     }
 
-    function iconFor(word){
+    function iconFor(word) {
       const cat = categoryFor(word);
       const pal = CATEGORY[cat] || CATEGORY.general;
       const key = iconKeyFor(word);
@@ -1157,15 +1307,15 @@
 
     const VOCAB = [
       "Start!",
-      "Atom","DNA","Biodiversity","Ecosystem","Abiotic factors","Biotic factors","Species","Genetic diversity",
-      "Habitat","Niche","Ecosystem","Food web","Energy flow","Decomposers","Producers","Consumers",
-      "Ecological balance","Symbiosis","Ecosystems: Aquatic","Ecosystems: Forest","Ecosystems: Grassland",
-      "Ecosystems: Desert","Ecosystems: Marine","Ecosystems: Freshwater","Ecosystems: Coral reef",
-      "Ecosystems: Tundra","Ecosystems: Urban","Invertebrates","Vertebrates","Arthropods","Mollusks",
-      "Arachnids","Fish","Amphibians","Reptiles","Birds","Mammals",
+      "Atom", "DNA", "Biodiversity", "Ecosystem", "Abiotic factors", "Biotic factors", "Species", "Genetic diversity",
+      "Habitat", "Niche", "Ecosystem", "Food web", "Energy flow", "Decomposers", "Producers", "Consumers",
+      "Ecological balance", "Symbiosis", "Ecosystems: Aquatic", "Ecosystems: Forest", "Ecosystems: Grassland",
+      "Ecosystems: Desert", "Ecosystems: Marine", "Ecosystems: Freshwater", "Ecosystems: Coral reef",
+      "Ecosystems: Tundra", "Ecosystems: Urban", "Invertebrates", "Vertebrates", "Arthropods", "Mollusks",
+      "Arachnids", "Fish", "Amphibians", "Reptiles", "Birds", "Mammals",
       "Microorganism",
-      "Microscopic life","Microscopic organisms","Microscopic ecosystems","Microscopic observation",
-      "Adaptation","Behavioral adaptation","Physiological adaptation","Evolution","Natural selection"
+      "Microscopic life", "Microscopic organisms", "Microscopic ecosystems", "Microscopic observation",
+      "Adaptation", "Behavioral adaptation", "Physiological adaptation", "Evolution", "Natural selection"
     ];
 
     const BOARD_TILES = 48;
@@ -1186,10 +1336,10 @@
 
     let pendingMove = null; // { playerIndex, from, to }
 
-    const boardWords = Array.from({length: BOARD_TILES}, (_, i) => VOCAB[i % VOCAB.length]);
+    const boardWords = Array.from({ length: BOARD_TILES }, (_, i) => VOCAB[i % VOCAB.length]);
 
     const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
-    const randInt = (a,b) => Math.floor(Math.random()*(b-a+1))+a;
+    const randInt = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
 
     const CHALLENGES = [
       (word) => ({ title: "Define it", text: `In 1–2 sentences, define <b>${word}</b> in your own words.`, ext: "Give a real-life example." }),
@@ -1206,10 +1356,10 @@
       "Name one adaptation an animal might need to survive there."
     ];
 
-    function pickChallenge(word){
-      const base = CHALLENGES[randInt(0, CHALLENGES.length-1)](word);
-      if(word.toLowerCase().includes("ecosystems:")){
-        base.ext = ECOSYSTEM_PROMPTS[randInt(0, ECOSYSTEM_PROMPTS.length-1)];
+    function pickChallenge(word) {
+      const base = CHALLENGES[randInt(0, CHALLENGES.length - 1)](word);
+      if (word.toLowerCase().includes("ecosystems:")) {
+        base.ext = ECOSYSTEM_PROMPTS[randInt(0, ECOSYSTEM_PROMPTS.length - 1)];
       }
       return base;
     }
@@ -1238,10 +1388,10 @@
     const btnBadge = document.getElementById("btnBadge");
     const btnNewChallenge = document.getElementById("btnNewChallenge");
 
-    function updateHeader(){
+    function updateHeader() {
       currentEl.textContent = PLAYERS[current].id;
 
-      if (!turnActive){
+      if (!turnActive) {
         turnHintEl.textContent = "Press “Play!” to start the turn.";
         btnRoll.disabled = true;
       } else {
@@ -1257,7 +1407,7 @@
         : "✅ Give current player a badge";
     }
 
-    function renderPlayers(){
+    function renderPlayers() {
       playersEl.innerHTML = "";
       PLAYERS.forEach((p, idx) => {
         const card = document.createElement("div");
@@ -1282,13 +1432,13 @@
 
         const badges = document.createElement("div");
         badges.className = "badges";
-        if(p.badges === 0){
+        if (p.badges === 0) {
           const empty = document.createElement("span");
           empty.className = "badge";
           empty.textContent = "0 badges";
           badges.appendChild(empty);
         } else {
-          for(let i=0; i<p.badges; i++){
+          for (let i = 0; i < p.badges; i++) {
             const b = document.createElement("span");
             b.className = "badge";
             b.textContent = "🏅";
@@ -1302,11 +1452,11 @@
       });
     }
 
-    function tileOccupants(tileIndex){
+    function tileOccupants(tileIndex) {
       return PLAYERS.filter(p => p.pos === tileIndex);
     }
 
-    function renderBoard(){
+    function renderBoard() {
       boardEl.innerHTML = "";
       boardWords.forEach((word, i) => {
         const tile = document.createElement("div");
@@ -1347,19 +1497,19 @@
 
         const meta = document.createElement("div");
         meta.className = "tileMeta";
-        meta.innerHTML = `<span class="tileIndex">#${String(i+1).padStart(2,"0")}</span>`;
+        meta.innerHTML = `<span class="tileIndex">#${String(i + 1).padStart(2, "0")}</span>`;
 
         tile.appendChild(occ);
         tile.appendChild(top);
         tile.appendChild(meta);
 
         tile.addEventListener("click", () => openTile(i));
-        tile.addEventListener("touchstart", () => {}, {passive:true});
+        tile.addEventListener("touchstart", () => { }, { passive: true });
         boardEl.appendChild(tile);
       });
     }
 
-    function openTile(i){
+    function openTile(i) {
       selectedTileIndex = i;
       const word = boardWords[i];
       const challenge = pickChallenge(word);
@@ -1373,11 +1523,11 @@
       }
 
       let moveInfo = "";
-      if (pendingMove && pendingMove.playerIndex === current){
+      if (pendingMove && pendingMove.playerIndex === current) {
         moveInfo = ` Pending move: ${pendingMove.from + 1} → ${pendingMove.to + 1}`;
       }
 
-      modalMeta.textContent = `Tile #${i+1} • Current: Player ${p.id} •${diceInfo}${moveInfo}`;
+      modalMeta.textContent = `Tile #${i + 1} • Current: Player ${p.id} •${diceInfo}${moveInfo}`;
 
       challengeBox.innerHTML = `<b>${challenge.title}</b><div>${challenge.text}</div>`;
       extensionBox.textContent = challenge.ext;
@@ -1385,28 +1535,28 @@
       updateHeader();
 
       modalBackdrop.style.display = "flex";
-      modalBackdrop.setAttribute("aria-hidden","false");
+      modalBackdrop.setAttribute("aria-hidden", "false");
     }
 
-    function closeModal(){
+    function closeModal() {
       modalBackdrop.style.display = "none";
-      modalBackdrop.setAttribute("aria-hidden","true");
+      modalBackdrop.setAttribute("aria-hidden", "true");
     }
 
-    function showTurnOverlay(){
+    function showTurnOverlay() {
       const p = PLAYERS[current];
       turnMsg.textContent = `Player ${p.id} it’s your turn!`;
       turnMsg.style.color = p.color;
       turnOverlay.style.display = "flex";
-      turnOverlay.setAttribute("aria-hidden","false");
+      turnOverlay.setAttribute("aria-hidden", "false");
     }
 
-    function hideTurnOverlay(){
+    function hideTurnOverlay() {
       turnOverlay.style.display = "none";
-      turnOverlay.setAttribute("aria-hidden","true");
+      turnOverlay.setAttribute("aria-hidden", "true");
     }
 
-    function startTurn(){
+    function startTurn() {
       badgeAwardedThisTurn = false;
       turnActive = true;
       lastRoll = null;
@@ -1419,18 +1569,18 @@
       renderBoard();
     }
 
-    function rollDice(){
-      if(!turnActive) return;
+    function rollDice() {
+      if (!turnActive) return;
 
       // ✅ NEW: play dice roll sound every time Roll Dice is clicked
-      try{
+      try {
         sfxDice.currentTime = 0; // restart if already playing
         sfxDice.play();
       } catch (err) {
         // ignore autoplay/security errors
       }
 
-      lastRoll = randInt(1,6);
+      lastRoll = randInt(1, 6);
       const p = PLAYERS[current];
 
       const to = (p.pos + lastRoll) % BOARD_TILES;
@@ -1445,7 +1595,7 @@
       openTile(to);
     }
 
-    function nextPlayer(){
+    function nextPlayer() {
       current = (current + 1) % PLAYERS.length;
       turnActive = false;
       lastRoll = null;
@@ -1459,13 +1609,13 @@
       showTurnOverlay();
     }
 
-    function closeAndAdvanceNoBadge(){
+    function closeAndAdvanceNoBadge() {
       pendingMove = null;
       closeModal();
       nextPlayer();
     }
 
-    function resetGame(){
+    function resetGame() {
       closeModal();
       PLAYERS.forEach(p => { p.pos = 0; p.badges = 0; });
       current = 0;
@@ -1481,12 +1631,12 @@
       showTurnOverlay();
     }
 
-    function awardBadgeAndAdvance(){
+    function awardBadgeAndAdvance() {
       if (badgeAwardedThisTurn) return;
 
       const p = PLAYERS[current];
 
-      if (pendingMove && pendingMove.playerIndex === current){
+      if (pendingMove && pendingMove.playerIndex === current) {
         p.pos = pendingMove.to;
       }
       pendingMove = null;
@@ -1494,7 +1644,7 @@
       p.badges = clamp(p.badges + 1, 0, 99);
       badgeAwardedThisTurn = true;
 
-      if(p.badges >= 5){
+      if (p.badges >= 5) {
         closeModal();
         renderPlayers();
         renderBoard();
@@ -1510,8 +1660,8 @@
       nextPlayer();
     }
 
-    function newChallenge(){
-      if(selectedTileIndex === null) return;
+    function newChallenge() {
+      if (selectedTileIndex === null) return;
       const word = boardWords[selectedTileIndex];
       const challenge = pickChallenge(word);
       challengeBox.innerHTML = `<b>${challenge.title}</b><div>${challenge.text}</div>`;
@@ -1529,11 +1679,11 @@
     btnNewChallenge.addEventListener("click", newChallenge);
 
     modalBackdrop.addEventListener("click", (e) => {
-      if(e.target === modalBackdrop) closeAndAdvanceNoBadge();
+      if (e.target === modalBackdrop) closeAndAdvanceNoBadge();
     });
 
     window.addEventListener("keydown", (e) => {
-      if(e.key === "Escape") closeAndAdvanceNoBadge();
+      if (e.key === "Escape") closeAndAdvanceNoBadge();
     });
 
     updateHeader();
@@ -1542,4 +1692,5 @@
     showTurnOverlay();
   </script>
 </body>
+
 </html>
