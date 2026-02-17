@@ -1,10 +1,5 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/cometsinthesky/biodiversity-battle-game/main/images/biodiversity-battle-og-image.png"
-       alt="Biodiversity Battle OG Image"
-       width="300"
-       height="300" />
-</p>
-## Biodiversity Battle Online Board Game 🕹️🧬🔬🦠🧫🌱 
+## Biodiversity Battle Online Board Game 🕹️🧬🔬🦠🧫🌱<img src="https://raw.githubusercontent.com/cometsinthesky/biodiversity-battle-game/main/images/biodiversity-battle-og-image.png" alt="Biodiversity Battle OG Image" width="300" height="300" />
+
 
 An interactive, classroom-friendly game to support **Biodiversity / Diversity of Living Things** learning - designed for **Middle Years / Year 6–9** contexts and adaptable to different curricula.
 
