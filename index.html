@@ -1991,6 +1991,7 @@
       PLAYERS.forEach((p) => {
         const row = document.createElement("div");
         row.className = "scoreRow glowRow";
+        row.style.color = p.color;
 
         const left = document.createElement("div");
         left.className = "scoreLeft";
@@ -2002,6 +2003,7 @@
         const name = document.createElement("div");
         name.className = "scoreName";
         name.textContent = `Player ${p.id}`;
+        name.style.color = p.color; // ✅ nome com a cor do jogador
 
         left.appendChild(dot);
         left.appendChild(name);
