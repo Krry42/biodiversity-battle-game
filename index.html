@@ -145,6 +145,20 @@
       border-radius: 14px;
       background: var(--card-strong);
       border: 1px solid rgba(0, 0, 0, .06);
+      flex-wrap: nowrap;      /* NÃO deixa quebrar linha */
+      gap: 2px;              /* espaço entre título e logo */
+    }
+
+    .brandLeft{
+      min-width: 0;           /* permite encolher sem quebrar */
+      flex: 1 1 auto;         /* título ocupa o espaço disponível */
+    }
+
+    .brandLogo{
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      flex: 0 0 200px;        /* logo fixa e sempre à direita */
     }
 
     .brand h1 {
@@ -223,6 +237,15 @@
       background: rgba(14, 26, 43, .86);
       box-shadow: 0 8px 18px rgba(14, 26, 43, .20);
     }
+    button.secondary:hover{ filter: brightness(1.03); }
+
+
+    button.nextturn{
+      background: rgba(37, 182, 80, 0.9);
+      color: #fff;
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.22);
+    }
+    button.nextturn:hover{ filter: brightness(1.03); }
 
     button.ghost {
       background: rgba(255, 255, 255, .80);
@@ -240,7 +263,7 @@
       filter: brightness(1.03);
     }
 
-    /* green play again button */
+    /* green play again button (kept, but not used anymore) */
     button.success {
       background: rgba(46, 204, 113, .95);
       box-shadow: 0 10px 22px rgba(46, 204, 113, .22);
@@ -415,6 +438,27 @@
     @media (max-width: 649px) {
       .board {
         grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    @media (max-width: 520px){
+      .brand{
+        flex-direction: row;      /* mantém na mesma linha */
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: nowrap;        /* não quebra */
+      }
+
+      .brandLeft{
+        min-width: 0;
+        flex: 1 1 auto;
+      }
+
+      .brandLogo{
+        width: 80px;
+        height: 80px;
+        flex: 0 0 80px;           /* fixa a logo à direita */
+        object-fit: contain;
       }
     }
 
@@ -601,7 +645,8 @@
     }
 
     .turnOverlay,
-    .winOverlay {
+    .winOverlay,
+    .startOverlay {
       position: fixed;
       inset: 0;
       display: none;
@@ -613,7 +658,8 @@
     }
 
     .turnCard,
-    .winCard {
+    .winCard,
+    .startCard {
       width: min(560px, 100%);
       background: rgba(255, 255, 255, .96);
       border-radius: 18px;
@@ -623,6 +669,7 @@
       text-align: center;
     }
 
+    .startCard h3,
     .turnCard h3,
     .winCard h3 {
       margin: 0 0 8px;
@@ -631,11 +678,42 @@
       font-weight: 1000;
     }
 
+    .startCard p,
     .turnCard p,
     .winCard p {
       margin: 0 0 14px;
       color: rgba(14, 26, 43, .70);
       font-size: var(--small-font);
+      line-height: 1.35;
+    }
+
+    .startButtons {
+      display: grid;
+      gap: 10px;
+    }
+
+    .startButtons button {
+      width: 100%;
+      font-size: clamp(14px, 1.6vw, 16px);
+      padding: 14px 16px;
+      border-radius: 16px;
+    }
+
+    /* Start selection colors */
+    button.pick2{
+      background: rgba(244, 180, 0, .95);
+      color: #fff; /* texto branco */
+      box-shadow: 0 10px 22px rgba(244, 180, 0, .22);
+    }
+
+    button.pick3 {
+      background: rgba(46, 204, 113, .95);
+      box-shadow: 0 10px 22px rgba(46, 204, 113, .22);
+    }
+
+    button.pick4 {
+      background: rgba(52, 152, 219, .95);
+      box-shadow: 0 10px 22px rgba(52, 152, 219, .22);
     }
 
     .turnCard .playBtn {
@@ -698,12 +776,21 @@
       text-align: right;
     }
 
-    /* winner highlight: dynamic glow via CSS vars set in JS */
+    /* NEW: glow per player row (everyone gets their own color glow) */
+    .scoreRow.glowRow {
+      border-color: var(--rowBorder, rgba(0, 0, 0, .10));
+      box-shadow:
+        0 0 0 3px var(--rowGlow, rgba(20, 80, 200, .12)),
+        0 0 22px var(--rowGlowSoft, rgba(20, 80, 200, .08)),
+        0 16px 40px rgba(0, 0, 0, .08);
+    }
+
+    /* Winner gets a stronger glow */
     .scoreRow.isWinner {
       border-color: var(--winBorder, rgba(20, 80, 200, .35));
       box-shadow:
-        0 0 0 3px var(--winGlow, rgba(20, 80, 200, .18)),
-        0 0 26px var(--winGlowSoft, rgba(20, 80, 200, .12)),
+        0 0 0 4px var(--winGlow, rgba(20, 80, 200, .22)),
+        0 0 30px var(--winGlowSoft, rgba(20, 80, 200, .14)),
         0 18px 45px rgba(0, 0, 0, .10);
       transform: translateY(-1px);
     }
@@ -829,11 +916,20 @@
       <aside class="panel">
         <div class="brand">
           <div>
-            <h1>Biodiversity Battle Board Game 🧬</h1>
-            <p>Groups of 4 | Roll→Answer→Check</p>
+            <h1>Biodiversity Battle</h1>
+            <h1>Board Game 🧬</h1>
+            <p>Roll → Answer → Check</p>
           </div>
-          <div class="pill">Scroll panel + board on phones</div>
-        </div>
+          <img
+              class="brandLogo"
+              src="./images/biodiversity-battle-logo.png"
+              width="110"
+              height="110"
+              alt="Biodiversity Battle logo"
+              loading="eager"
+              decoding="async"
+            />
+          </div>
 
         <div class="controls">
           <div class="row">
@@ -850,8 +946,8 @@
             </div>
             <div class="stat">
               <h2>Current Player</h2>
-              <div class="big" id="currentPlayer">1</div>
-              <div class="muted" id="turnHint">Press “Play!” to start the turn.</div>
+              <div class="big" id="currentPlayer">—</div>
+              <div class="muted" id="turnHint">Select number of players to start.</div>
             </div>
           </div>
 
@@ -867,10 +963,10 @@
       <main class="boardShell">
         <div class="boardHeader">
           <div>
-            <h2>Clickable Board</h2>
-            <p class="muted">Scroll inside the board if needed (tablet/phone friendly).</p>
+            <h2>Board</h2>
+            <p class="muted">Scroll inside the board if needed.</p>
           </div>
-          <div class="pill">Tap tiles</div>
+          <div class="pill">Scroll panel and board on devices</div>
         </div>
 
         <div class="board" id="board"></div>
@@ -881,11 +977,26 @@
       <div class="footerLine">
         Created by Lucas Ferreira (MSc. Physics Education, PhD student Science Education (UnB/IF/PPGEduC)
         &nbsp;&nbsp;|&nbsp;&nbsp;
-        <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">CC BY-NC-ND 4.0</a>
+        <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">CC BY-NC-ND
+          4.0</a>
         &nbsp;&nbsp;|&nbsp;&nbsp;
-        <a href="https://github.com/cometsinthesky/biodiversity-living-things-game" target="_blank" rel="noopener noreferrer">GitHub Page</a>
+        <a href="https://github.com/cometsinthesky/biodiversity-living-things-game" target="_blank"
+          rel="noopener noreferrer">GitHub Page</a>
       </div>
     </footer>
+  </div>
+
+  <!-- Start overlay -->
+  <div class="startOverlay" id="startOverlay" aria-hidden="true">
+    <div class="startCard">
+      <h3>Welcome to Biodiversity Battle!</h3>
+      <p>Select number of players:</p>
+      <div class="startButtons">
+        <button class="pick2" id="btnPick2">2 players</button>
+        <button class="pick3" id="btnPick3">3 players</button>
+        <button class="pick4" id="btnPick4">4 players</button>
+      </div>
+    </div>
   </div>
 
   <div class="turnOverlay" id="turnOverlay" aria-hidden="true">
@@ -904,16 +1015,16 @@
 
       <div class="scoreTable" id="scoreTable"></div>
 
-      <button class="success" id="btnPlayAgain">Play Again!</button>
+      <button id="btnCheckBoard">Check board and positions!</button>
     </div>
   </div>
 
-  <!-- NEW: Bonus overlay -->
+  <!-- Bonus overlay -->
   <div class="bonusOverlay" id="bonusOverlay" aria-hidden="true">
     <div class="bonusCard">
       <h3 id="bonusTitle">Bonus Move!</h3>
       <p id="bonusText">Player X has 🏅 badges. Bonus: Player X moved +N tiles.</p>
-      <button class="secondary" id="btnBonusNext">Next player turn!</button>
+      <button class="nextturn" id="btnBonusNext">Next player turn!</button>
     </div>
   </div>
 
@@ -1381,8 +1492,7 @@
     }
 
     function categoryFor(word) {
-      const raw = String(word ?? "").trim();
-      const lower = raw.toLowerCase();
+      const lower = String(word ?? "").trim().toLowerCase();
 
       if (normalizeWord(word) === "start!") return "start";
 
@@ -1468,12 +1578,27 @@
 
     const BOARD_TILES = 48;
 
-    const PLAYERS = [
-      { id: 1, name: "Player 1", color: "#e74c3c", pos: 0, badges: 0 },
-      { id: 2, name: "Player 2", color: "#3498db", pos: 0, badges: 0 },
-      { id: 3, name: "Player 3", color: "#2ecc71", pos: 0, badges: 0 },
-      { id: 4, name: "Player 4", color: "#9b59b6", pos: 0, badges: 0 }
+    // Player templates + dynamic player list (2/3/4)
+    const PLAYER_TEMPLATES = [
+      { color: "#e74c3c" }, // Player 1
+      { color: "#3498db" }, // Player 2
+      { color: "#2ecc71" }, // Player 3
+      { color: "#9b59b6" }  // Player 4
     ];
+
+    let PLAYERS = []; // built after selecting 2/3/4
+    let hasChosenPlayers = false;
+
+    function buildPlayers(n) {
+      const count = Math.max(2, Math.min(4, Number(n) || 2));
+      PLAYERS = PLAYER_TEMPLATES.slice(0, count).map((t, i) => ({
+        id: i + 1,
+        name: `Player ${i + 1}`,
+        color: t.color,
+        pos: 0,
+        badges: 0
+      }));
+    }
 
     let current = 0;
     let lastRoll = null;
@@ -1489,6 +1614,9 @@
 
     // bonus overlay state (freeze until user clicks Next)
     let waitingBonusAck = false;
+
+    // NEW: after win -> allow only "Reset Game"
+    let boardCheckMode = false;
 
     const boardWords = Array.from({ length: BOARD_TILES }, (_, i) => VOCAB[i % VOCAB.length]);
 
@@ -1545,6 +1673,12 @@
     const challengeBox = document.getElementById("challengeBox");
     const extensionBox = document.getElementById("extensionBox");
 
+    // start overlay elements
+    const startOverlay = document.getElementById("startOverlay");
+    const btnPick2 = document.getElementById("btnPick2");
+    const btnPick3 = document.getElementById("btnPick3");
+    const btnPick4 = document.getElementById("btnPick4");
+
     const turnOverlay = document.getElementById("turnOverlay");
     const turnMsg = document.getElementById("turnMsg");
     const btnPlay = document.getElementById("btnPlay");
@@ -1554,7 +1688,7 @@
     const winTitle = document.getElementById("winTitle");
     const winSubtitle = document.getElementById("winSubtitle");
     const scoreTable = document.getElementById("scoreTable");
-    const btnPlayAgain = document.getElementById("btnPlayAgain");
+    const btnCheckBoard = document.getElementById("btnCheckBoard");
 
     // bonus overlay elements
     const bonusOverlay = document.getElementById("bonusOverlay");
@@ -1570,12 +1704,68 @@
     const btnBadge = document.getElementById("btnBadge");
     const btnNewChallenge = document.getElementById("btnNewChallenge");
 
+    function showStartOverlay() {
+      hideWinOverlay();
+      hideBonusOverlay();
+      closeModal();
+      hideTurnOverlay();
+
+      startOverlay.style.display = "flex";
+      startOverlay.setAttribute("aria-hidden", "false");
+
+      updateHeader();
+      renderPlayers();
+      renderBoard();
+    }
+
+    function hideStartOverlay() {
+      startOverlay.style.display = "none";
+      startOverlay.setAttribute("aria-hidden", "true");
+    }
+
+    function beginWithPlayers(n) {
+      buildPlayers(n);
+      hasChosenPlayers = true;
+
+      current = 0;
+      lastRoll = null;
+      selectedTileIndex = null;
+      turnActive = false;
+      badgeAwardedThisTurn = false;
+      pendingMove = null;
+      gameOver = false;
+      waitingBonusAck = false;
+      boardCheckMode = false;
+
+      hideStartOverlay();
+      updateHeader();
+      renderPlayers();
+      renderBoard();
+      showTurnOverlay();
+    }
+
     function updateHeader() {
+      if (!PLAYERS.length) {
+        currentEl.textContent = "—";
+        diceValEl.textContent = (lastRoll === null) ? "—" : String(lastRoll);
+        turnHintEl.textContent = "Select number of players to start.";
+        btnRoll.disabled = true;
+        btnEndTurn.disabled = true;
+        btnReset.disabled = false;
+
+        btnBadge.disabled = true;
+        btnBadge.textContent = "✅ Give current player a badge";
+        return;
+      }
+
       currentEl.textContent = PLAYERS[current].id;
 
-      // If game over, lock controls
       if (gameOver) {
-        turnHintEl.textContent = "Game over. Press “Play Again!”";
+        if (boardCheckMode) {
+          turnHintEl.textContent = "Check board and positions. Use “Reset Game” to restart.";
+        } else {
+          turnHintEl.textContent = "Game over. Press “Check board and positions!”";
+        }
         btnRoll.disabled = true;
         btnEndTurn.disabled = true;
         btnReset.disabled = false;
@@ -1592,16 +1782,21 @@
         }
       }
 
-      // If bonus overlay is waiting, lock turn controls
       if (waitingBonusAck && !gameOver) {
         turnHintEl.textContent = "Bonus applied. Press “Next player turn!”";
         btnRoll.disabled = true;
         btnEndTurn.disabled = true;
       }
 
+      if (boardCheckMode) {
+        btnRoll.disabled = true;
+        btnEndTurn.disabled = true;
+        btnBadge.disabled = true;
+      }
+
       diceValEl.textContent = (lastRoll === null) ? "—" : String(lastRoll);
 
-      btnBadge.disabled = badgeAwardedThisTurn || gameOver || waitingBonusAck;
+      btnBadge.disabled = badgeAwardedThisTurn || gameOver || waitingBonusAck || boardCheckMode;
       btnBadge.textContent = badgeAwardedThisTurn
         ? "✅ Badge already awarded this turn"
         : "✅ Give current player a badge";
@@ -1609,6 +1804,16 @@
 
     function renderPlayers() {
       playersEl.innerHTML = "";
+
+      if (!PLAYERS.length) {
+        const msg = document.createElement("div");
+        msg.className = "muted";
+        msg.style.padding = "8px 2px";
+        msg.textContent = "Choose 2, 3, or 4 players to begin.";
+        playersEl.appendChild(msg);
+        return;
+      }
+
       PLAYERS.forEach((p, idx) => {
         const card = document.createElement("div");
         card.className = "playerCard";
@@ -1621,7 +1826,7 @@
         token.style.background = p.color;
 
         const text = document.createElement("div");
-        const star = (idx === current && !gameOver) ? " ⭐" : "";
+        const star = (idx === current && !gameOver && !boardCheckMode) ? " ⭐" : "";
         text.innerHTML = `
           <div class="playerName" style="color:${p.color}">${p.name}${star}</div>
           <div class="playerMeta">Position: ${p.pos + 1}/${BOARD_TILES}</div>
@@ -1653,6 +1858,7 @@
     }
 
     function tileOccupants(tileIndex) {
+      if (!PLAYERS.length) return [];
       return PLAYERS.filter(p => p.pos === tileIndex);
     }
 
@@ -1710,7 +1916,8 @@
     }
 
     function openTile(i) {
-      if (gameOver || waitingBonusAck) return;
+      if (!PLAYERS.length) return;
+      if (gameOver || waitingBonusAck || boardCheckMode) return;
 
       selectedTileIndex = i;
       const word = boardWords[i];
@@ -1746,7 +1953,8 @@
     }
 
     function showTurnOverlay() {
-      if (gameOver || waitingBonusAck) return;
+      if (!PLAYERS.length) return;
+      if (gameOver || waitingBonusAck || boardCheckMode) return;
       const p = PLAYERS[current];
       turnMsg.textContent = `Player ${p.id} it’s your turn!`;
       turnMsg.style.color = p.color;
@@ -1759,30 +1967,30 @@
       turnOverlay.setAttribute("aria-hidden", "true");
     }
 
-    // win overlay helpers
     function showWinOverlay(winnerIndex) {
+      if (!PLAYERS.length) return;
+
       const w = PLAYERS[winnerIndex];
       gameOver = true;
       waitingBonusAck = false;
+      boardCheckMode = false; // only locks after pressing "Check board..."
 
-      // play success sound when win box appears
       try {
         sfxSuccess.currentTime = 0;
         sfxSuccess.play();
       } catch (err) { }
 
-      // text styled to winner
-      winTitle.textContent = `${w.name} wins! 🎉`;
+      winTitle.textContent = `Congratulations Player ${w.id}! You won the Biodiversity Battle!`;
       winTitle.style.color = w.color;
 
-      winSubtitle.textContent = "Congratulations! You won the Biodiversity Battle!";
-      winSubtitle.style.color = "rgba(14,26,43,.70)";
+      // hide subtitle (scoreboard comes right after)
+      winSubtitle.textContent = "";
+      winSubtitle.style.display = "none";
 
-      // build scoreboard (badges as repeated emojis)
       scoreTable.innerHTML = "";
       PLAYERS.forEach((p) => {
         const row = document.createElement("div");
-        row.className = "scoreRow";
+        row.className = "scoreRow glowRow";
 
         const left = document.createElement("div");
         left.className = "scoreLeft";
@@ -1805,19 +2013,22 @@
         row.appendChild(left);
         row.appendChild(badges);
 
-        // highlight winner row + dynamic glow using winner color
+        // glow for EVERY player row
+        row.style.setProperty("--rowBorder", hexToRgba(p.color, 0.35));
+        row.style.setProperty("--rowGlow", hexToRgba(p.color, 0.18));
+        row.style.setProperty("--rowGlowSoft", hexToRgba(p.color, 0.12));
+
+        // stronger glow for winner
         if (p.id === w.id) {
           row.classList.add("isWinner");
-          const c = w.color || p.color || "#1450c8";
-          row.style.setProperty("--winBorder", hexToRgba(c, 0.40));
-          row.style.setProperty("--winGlow", hexToRgba(c, 0.22));
-          row.style.setProperty("--winGlowSoft", hexToRgba(c, 0.14));
+          row.style.setProperty("--winBorder", hexToRgba(p.color, 0.50));
+          row.style.setProperty("--winGlow", hexToRgba(p.color, 0.28));
+          row.style.setProperty("--winGlowSoft", hexToRgba(p.color, 0.18));
         }
 
         scoreTable.appendChild(row);
       });
 
-      // lock turn overlay if visible
       hideTurnOverlay();
       closeModal();
       hideBonusOverlay();
@@ -1835,8 +2046,9 @@
       winOverlay.setAttribute("aria-hidden", "true");
     }
 
-    // bonus overlay helpers
     function showBonusOverlay({ playerIndex, badges, bonusTiles }) {
+      if (!PLAYERS.length) return;
+
       const p = PLAYERS[playerIndex];
 
       waitingBonusAck = true;
@@ -1858,7 +2070,8 @@
     }
 
     function startTurn() {
-      if (gameOver || waitingBonusAck) return;
+      if (!PLAYERS.length) return showStartOverlay();
+      if (gameOver || waitingBonusAck || boardCheckMode) return;
 
       badgeAwardedThisTurn = false;
       turnActive = true;
@@ -1873,9 +2086,9 @@
     }
 
     function rollDice() {
-      if (!turnActive || gameOver || waitingBonusAck) return;
+      if (!PLAYERS.length) return showStartOverlay();
+      if (!turnActive || gameOver || waitingBonusAck || boardCheckMode) return;
 
-      // play dice roll sound every time Roll Dice is clicked
       try {
         sfxDice.currentTime = 0;
         sfxDice.play();
@@ -1897,7 +2110,8 @@
     }
 
     function nextPlayer() {
-      if (gameOver || waitingBonusAck) return;
+      if (!PLAYERS.length) return showStartOverlay();
+      if (gameOver || waitingBonusAck || boardCheckMode) return;
 
       current = (current + 1) % PLAYERS.length;
       turnActive = false;
@@ -1913,7 +2127,8 @@
     }
 
     function closeAndAdvanceNoBadge() {
-      if (gameOver || waitingBonusAck) return;
+      if (!PLAYERS.length) return showStartOverlay();
+      if (gameOver || waitingBonusAck || boardCheckMode) return;
       pendingMove = null;
       closeModal();
       nextPlayer();
@@ -1923,8 +2138,11 @@
       hideWinOverlay();
       hideBonusOverlay();
       closeModal();
+      hideTurnOverlay();
 
-      PLAYERS.forEach(p => { p.pos = 0; p.badges = 0; });
+      hasChosenPlayers = false;
+
+      PLAYERS = [];
       current = 0;
       lastRoll = null;
       selectedTileIndex = null;
@@ -1933,17 +2151,23 @@
       pendingMove = null;
       gameOver = false;
       waitingBonusAck = false;
+      boardCheckMode = false;
+
+      // restore subtitle defaults (safe)
+      winSubtitle.style.display = "";
+      winSubtitle.textContent = "You won the Biodiversity Battle!";
 
       updateHeader();
       renderPlayers();
       renderBoard();
-      showTurnOverlay();
+
+      showStartOverlay();
     }
 
     function awardBadgeAndAdvance() {
-      if (badgeAwardedThisTurn || gameOver || waitingBonusAck) return;
+      if (!PLAYERS.length) return showStartOverlay();
+      if (badgeAwardedThisTurn || gameOver || waitingBonusAck || boardCheckMode) return;
 
-      // play win sound ONLY when badge button is clicked
       try {
         sfxWin.currentTime = 0;
         sfxWin.play();
@@ -1951,17 +2175,14 @@
 
       const p = PLAYERS[current];
 
-      // 1) Apply the pending move (dice) ONLY if badge is awarded
       if (pendingMove && pendingMove.playerIndex === current) {
         p.pos = pendingMove.to;
       }
       pendingMove = null;
 
-      // 2) Give badge
       p.badges = clamp(p.badges + 1, 0, 99);
       badgeAwardedThisTurn = true;
 
-      // 3) Win check first (so no bonus overlay on win)
       if (p.badges >= 5) {
         closeModal();
         renderPlayers();
@@ -1970,16 +2191,9 @@
         return;
       }
 
-      // 4) Bonus mapping (as specified)
-      const bonusMap = {
-        2: 5,
-        3: 10,
-        4: 10
-      };
-
+      const bonusMap = { 2: 5, 3: 10, 4: 10 };
       const bonusTiles = bonusMap[p.badges] ?? 0;
 
-      // 5) If there is a bonus, move extra tiles and show overlay
       if (bonusTiles > 0) {
         p.pos = (p.pos + bonusTiles) % BOARD_TILES;
 
@@ -1987,12 +2201,11 @@
         renderBoard();
         closeModal();
 
-        updateHeader(); // locks buttons + updates hints
+        updateHeader();
         showBonusOverlay({ playerIndex: current, badges: p.badges, bonusTiles });
-        return; // DO NOT advance turn yet
+        return;
       }
 
-      // 6) No bonus -> normal flow
       renderPlayers();
       renderBoard();
 
@@ -2001,21 +2214,27 @@
     }
 
     function newChallenge() {
-      if (selectedTileIndex === null || gameOver || waitingBonusAck) return;
+      if (!PLAYERS.length) return showStartOverlay();
+      if (selectedTileIndex === null || gameOver || waitingBonusAck || boardCheckMode) return;
       const word = boardWords[selectedTileIndex];
       const challenge = pickChallenge(word);
       challengeBox.innerHTML = `<b>${challenge.title}</b><div>${challenge.text}</div>`;
       extensionBox.textContent = challenge.ext;
     }
 
+    // Start overlay buttons
+    btnPick2.addEventListener("click", () => beginWithPlayers(2));
+    btnPick3.addEventListener("click", () => beginWithPlayers(3));
+    btnPick4.addEventListener("click", () => beginWithPlayers(4));
+
     btnPlay.addEventListener("click", startTurn);
     btnRoll.addEventListener("click", rollDice);
     btnEndTurn.addEventListener("click", nextPlayer);
     btnReset.addEventListener("click", resetGame);
 
-    // fail sound ONLY on Try Again button click
     btnTryAgain.addEventListener("click", () => {
-      if (gameOver || waitingBonusAck) return;
+      if (!PLAYERS.length) return showStartOverlay();
+      if (gameOver || waitingBonusAck || boardCheckMode) return;
       try {
         sfxFail.currentTime = 0;
         sfxFail.play();
@@ -2026,33 +2245,49 @@
     btnBadge.addEventListener("click", awardBadgeAndAdvance);
     btnNewChallenge.addEventListener("click", newChallenge);
 
-    // Play Again button
-    btnPlayAgain.addEventListener("click", resetGame);
+    btnCheckBoard.addEventListener("click", () => {
+      if (!PLAYERS.length) return showStartOverlay();
+      if (!gameOver) return;
 
-    // Bonus Next button
+      // enter inspection mode: disable everything except Reset Game
+      boardCheckMode = true;
+
+      hideWinOverlay();
+      closeModal();
+      hideBonusOverlay();
+      hideTurnOverlay();
+
+      updateHeader();
+      renderPlayers();
+      renderBoard();
+    });
+
     btnBonusNext.addEventListener("click", () => {
-      if (gameOver) return;
+      if (!PLAYERS.length) return showStartOverlay();
+      if (gameOver || boardCheckMode) return;
       hideBonusOverlay();
       nextPlayer();
     });
 
-    // Note: backdrop click and Escape close WITHOUT fail sound (by design)
     modalBackdrop.addEventListener("click", (e) => {
-      if (gameOver || waitingBonusAck) return;
+      if (!PLAYERS.length) return;
+      if (gameOver || waitingBonusAck || boardCheckMode) return;
       if (e.target === modalBackdrop) closeAndAdvanceNoBadge();
     });
 
     window.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
-        if (gameOver || waitingBonusAck) return;
+        if (!PLAYERS.length) return;
+        if (gameOver || waitingBonusAck || boardCheckMode) return;
         closeAndAdvanceNoBadge();
       }
     });
 
+    // Initial render
     updateHeader();
     renderPlayers();
     renderBoard();
-    showTurnOverlay();
+    showStartOverlay();
   </script>
 </body>
 
